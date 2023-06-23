@@ -1,0 +1,7 @@
+{
+  "name": "lemmur",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
