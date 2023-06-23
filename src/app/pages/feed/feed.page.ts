@@ -50,7 +50,7 @@ export class FeedPage implements OnInit {
   }
 
   private async getPosts(): Promise<void> {
-    const client = getClient(this.account?.server as string);
+    const client = getClient(this.account?.server || "lemmy.world");
     const request: GetPosts = { 
       auth: this.authToken,
       type_: this.type,

@@ -114,11 +114,29 @@ ion-note {
   color: var(--ion-color-medium-shade);
 }
 
-ion-item.selected {
-  --color: var(--ion-color-primary);
+ion-item {
+  display: flex;
+  justify-content: space-between;
+  &.selected {
+    --color: var(--ion-color-primary);
+  }
+}
+
+.community-item {
+  display: flex;
+  align-items: center;
+
+  ion-label {
+    font-size: 0.8em;
+  }
 }
 
 .community-icon {
   width: 2em;
   margin-right: 1em;
+}
+
+.toggle-start-community {
+  position: absolute;
+  right: 0;
 }
