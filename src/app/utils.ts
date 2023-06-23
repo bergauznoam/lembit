@@ -1,6 +1,8 @@
 export const calculateTimePassed = (dateString: string): string => {
   const givenDate = new Date(dateString);
-  const currentDate = new Date();
+  const local = new Date();
+  const offset = local.getTimezoneOffset();
+  const currentDate = new Date(local.getTime() + offset * 60000);
 
   const timeDifference = Math.abs(currentDate.getTime() - givenDate.getTime());
   const minutes = Math.floor(timeDifference / (1000 * 60));

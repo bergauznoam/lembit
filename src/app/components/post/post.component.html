@@ -1,0 +1,45 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>{{ title }} </ion-card-title>
+    <ion-card-subtitle>
+      <div class="community">
+        <div class="community-icon">
+          <ion-thumbnail slot="start" *ngIf="communityIcon">
+            <img class="community-icon" [src]="communityIcon" />
+          </ion-thumbnail>
+        </div>
+        <span class="community-name">{{ communityName }}</span>
+      </div>
+      <span>{{ published }}</span>
+    </ion-card-subtitle>
+  </ion-card-header>
+
+  <ion-card-content>
+    <ion-thumbnail slot="start" *ngIf="thumbnail">
+      <img [alt]="title" [src]="thumbnail" />
+    </ion-thumbnail>
+    <span *ngIf="body">{{ body }}</span>
+  </ion-card-content>
+  <div class="ion-card-footer">
+    <div class="score">
+      <ion-button fill="clear">
+        <ion-icon name="caret-up-circle-outline" color="primary"></ion-icon>
+      </ion-button>
+      <span>{{ score }}</span>
+      <ion-button fill="clear">
+        <ion-icon name="caret-down-circle-outline" color="danger"></ion-icon>
+      </ion-button>
+    </div>
+    <div class="comments">
+      <ion-button fill="clear" class="comments">
+        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+      </ion-button>
+      <span>{{ commentsCount }}</span>
+    </div>
+    <div class="share">
+      <ion-button fill="clear" (click)="onShare()">
+        <ion-icon name="share-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+</ion-card>
