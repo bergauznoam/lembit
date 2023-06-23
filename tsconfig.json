@@ -35,6 +35,9 @@
       ],
       "@lemmy": [
         "src/app/lemmy"
+      ],
+      "@utils": [
+        "src/app/utils"
       ]
     }
   },

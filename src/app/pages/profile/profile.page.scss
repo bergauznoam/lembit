@@ -1,0 +1,52 @@
+.account-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 3em;
+    justify-content: center;
+
+    .avatar {
+        width: 12em;
+        height: 12em;
+        border-radius: 12em;
+    }
+
+    ion-chip {
+        margin-top: 2em;
+
+        .cake {
+            width: 1.3em;
+            margin-right: 1em;
+        }
+    }
+
+    .account-history {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+
+        &-item {
+            width: 6em;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-left: 1em;
+            margin-top: 1em;
+            
+            &-details {
+                display: flex;
+                flex-direction: column;
+                margin-left: 0.5em;
+
+                ion-label {
+                    font-size: 1.2em;
+                    text-align: center;
+                    &:nth-child(2) {
+                        font-size: 0.8em;
+                    }
+                }
+            }
+
+        }
+    }
+}

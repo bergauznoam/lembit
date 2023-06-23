@@ -24,8 +24,6 @@ export class AppComponent implements OnInit {
   ];
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
   public async ngOnInit(): Promise<void> {
-    const client = getClient();
-    const response = await client.listCommunities({});
-    console.log(response);
+
   }
 }

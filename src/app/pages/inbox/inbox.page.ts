@@ -4,13 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.page.html',
-  styleUrls: ['./settings.page.scss'],
+  selector: 'app-inbox',
+  templateUrl: './inbox.page.html',
+  styleUrls: ['./inbox.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule]
 })
-export class SettingsPage implements OnInit {
+export class InboxPage implements OnInit {
 
   constructor() { }
 
