@@ -22,12 +22,18 @@
   </ion-card-content>
   <div class="ion-card-footer">
     <div class="score">
-      <ion-button fill="clear">
-        <ion-icon name="caret-up-circle-outline" color="primary"></ion-icon>
+      <ion-button fill="clear" (click)="onVote('up')">
+        <ion-icon
+          name="caret-up-circle-outline"
+          [color]="didUpvote ? 'primary' : 'medium'"
+        ></ion-icon>
       </ion-button>
       <span>{{ score }}</span>
-      <ion-button fill="clear">
-        <ion-icon name="caret-down-circle-outline" color="danger"></ion-icon>
+      <ion-button fill="clear" (click)="onVote('down')">
+        <ion-icon
+          name="caret-down-circle-outline"
+          [color]="didDownvote ? 'danger' : 'medium'"
+        ></ion-icon>
       </ion-button>
     </div>
     <div class="comments">

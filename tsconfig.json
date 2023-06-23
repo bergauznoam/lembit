@@ -38,6 +38,9 @@
       ],
       "@utils": [
         "src/app/utils"
+      ],
+      "@interfaces/*": [
+        "src/app/interfaces/*"
       ]
     }
   },

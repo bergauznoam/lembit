@@ -1,18 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InfiniteScrollCustomEvent, IonicModule } from '@ionic/angular';
 
-import { GetPosts, GetPostsResponse, SortType, ListingType, PostView } from "lemmy-js-client";
+import { 
+  GetPosts, 
+  GetPostsResponse, 
+  SortType, 
+  ListingType, 
+  PostView,
+  CreatePostLike 
+} from "lemmy-js-client";
 
 import { getClient } from "@lemmy";
 import { Account, DatabaseService } from '@services/database.service';
 import { PostPreviewComponent } from "@components/post-preview/post-preview.component";
+import { IUpdatePostScore } from "@interfaces/update-post-score.interface"; 
 
 @Component({
   selector: 'app-feed',
   templateUrl: './feed.page.html',
   styleUrls: ['./feed.page.scss'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Default,
   imports: [IonicModule, CommonModule, PostPreviewComponent]
 })
 export class FeedPage implements OnInit {
@@ -26,7 +35,8 @@ export class FeedPage implements OnInit {
   public posts: PostView[] = [];
 
   constructor(
-    private readonly databaseService: DatabaseService
+    private readonly databaseService: DatabaseService,
+    private readonly changeDetectorRef: ChangeDetectorRef
   ) { 
     const authToken = localStorage.getItem("authToken");
     if (authToken) {
@@ -66,6 +76,19 @@ export class FeedPage implements OnInit {
       await this.getPosts()
       event.target.complete();
     }, 2000);
+  }
+
+  public async onUpdatePostScore({ id, score }: IUpdatePostScore): Promise<void> {
+    if (!this.authToken) { return; }
+    // const index = this.posts.findIndex(post => post.post.id === id);
+    const client = getClient(this.account?.server as string);
+    const request: CreatePostLike = {
+      auth: this.authToken, 
+      post_id: id, 
+      score: score
+    }
+    const updated_post = await client.likePost(request);
+    this.posts = this.posts.map(post => post.post.id === id ? updated_post.post_view : post)
   } 
 
 }
