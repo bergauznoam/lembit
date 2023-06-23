@@ -7,13 +7,13 @@ import { calculateTimePassed } from "@utils";
 import { getClient } from "@lemmy";
 
 @Component({
-  selector: 'app-post',
-  templateUrl: './post.component.html',
-  styleUrls: ['./post.component.scss'],
+  selector: 'app-post-preview',
+  templateUrl: './post-preview.component.html',
+  styleUrls: ['./post-preview.component.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule]
 })
-export class PostComponent {
+export class PostPreviewComponent {
   @Input() public post!: PostView
 
   public get thumbnail(): string | undefined {

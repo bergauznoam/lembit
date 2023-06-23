@@ -6,14 +6,14 @@ import { GetPosts, GetPostsResponse, SortType, ListingType, PostView } from "lem
 
 import { getClient } from "@lemmy";
 import { Account, DatabaseService } from '@services/database.service';
-import { PostComponent } from "@components/post/post.component";
+import { PostPreviewComponent } from "@components/post-preview/post-preview.component";
 
 @Component({
   selector: 'app-feed',
   templateUrl: './feed.page.html',
   styleUrls: ['./feed.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, PostComponent]
+  imports: [IonicModule, CommonModule, PostPreviewComponent]
 })
 export class FeedPage implements OnInit {
   private readonly authToken!: string | undefined;
