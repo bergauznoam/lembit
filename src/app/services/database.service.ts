@@ -15,7 +15,7 @@ export interface TodoItem {
 export interface Account {
     id?: number;
     username: string;
-    password: string;
+    token: string;
     server: string;
     primary: boolean;
 }
@@ -38,13 +38,29 @@ export class DatabaseService extends Dexie {
     constructor() {
         super("Lembit");
         this.version(3).stores({
-            accounts: "++id, username, password, server, primary",
+            accounts: "++id, username, token, server, primary",
             starred_community: "++id, user_id, title, icon, url"
         });
     }
 
-    public async addAccount(account: Account) {
-        await this.accounts.add(account);
+    public async getAccount(id?: number, username?: string): Promise<Account | undefined> {
+        if (id) {
+            return await this.accounts.filter(account => account.id === id).first();
+        }
+        if (username) {
+            return await this.accounts.filter(account => account.username === username).first();
+        }
+        return;
+    }
+
+    public async addAccount(account: Partial<Account>): Promise<void> {
+        const isPrimary = (await this.listAccounts()).length === 0;
+        await this.accounts.add({ ...account, primary: isPrimary } as Account);
+    }
+
+    public async updateAccountToken(id: number, authToken: string): Promise<Account> {
+        await this.accounts.update(id, { token: authToken });
+        return await this.getAccount(id) as Account;
     }
 
     public async listAccounts(): Promise<Account[]> {

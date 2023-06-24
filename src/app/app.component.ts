@@ -3,10 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
-import { getClient } from "@lemmy";
-import { LemmyHttp, ListCommunities, ListCommunitiesResponse } from "lemmy-js-client";
 import { Account, DatabaseService, StarredCommunity } from '@services/database.service';
 import { ICommunityItem } from "@interfaces/community-item.interface";
+import { ApiService } from '@services/api.service';
 
 @Component({
   selector: 'app-root',
@@ -16,12 +15,11 @@ import { ICommunityItem } from "@interfaces/community-item.interface";
   imports: [IonicModule, RouterLink, RouterLinkActive, CommonModule],
 })
 export class AppComponent implements OnInit {
-  private authToken!: string | null;
-  private lemmyClient!: LemmyHttp;
   public account!: Account;
 
   constructor(
-    private readonly databaseService: DatabaseService
+    private readonly databaseService: DatabaseService,
+    private readonly apiService: ApiService
   ) { }
 
   public communities: ICommunityItem[] = [];
@@ -30,13 +28,11 @@ export class AppComponent implements OnInit {
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
   public async ngOnInit(): Promise<void> {
-    this.authToken = localStorage.getItem("authToken");
     const account = await this.databaseService.getPrimaryAccount();
     if (account) {
       this.account = account;
       this.getStarredCommunites(account.id as number);
     }
-    this.lemmyClient = getClient(this.account?.server || "lemmy.world");
     await this.getCommunities();
   }
 
@@ -45,13 +41,7 @@ export class AppComponent implements OnInit {
   }
 
   private async getCommunities(): Promise<void> {
-    const request: ListCommunities = {
-      auth: this.authToken || undefined,
-      type_: this.authToken ? "Subscribed" : "Local",
-      limit: 50
-    }
-    const response: ListCommunitiesResponse = await this.lemmyClient.listCommunities(request)
-    this.communities = response.communities
+    this.communities = (await this.apiService.getCommunities("Subscribed", 50, 1))
       .filter(community =>
         !community.blocked &&
         !community.community.deleted &&
@@ -61,7 +51,7 @@ export class AppComponent implements OnInit {
         title: community.community.name,
         url: `/community/${community.community.id}`,
         icon: community.community.icon
-      }))
+      }));
   }
 
   public isStarredCommunity(community: ICommunityItem): boolean {

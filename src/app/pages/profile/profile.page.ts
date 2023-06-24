@@ -6,12 +6,12 @@ import {
 } from "@angular/forms";
 import { IonicModule } from "@ionic/angular";
 
-import { GetPersonDetails, GetPersonDetailsResponse } from "lemmy-js-client";
-
 import { DatabaseService, Account } from "@services/database.service";
 import { LoginComponent } from "@components/login/login.component";
 import { getClient } from "@lemmy";
 import { calculateTimePassed } from "@utils";
+import { ApiService } from "@services/api.service";
+import { GetPersonDetailsResponse } from "lemmy-js-client";
 
 @Component({
   selector: "app-profile",
@@ -34,6 +34,7 @@ export class ProfilePage implements OnInit {
 
   constructor(
     private readonly databaseService: DatabaseService,
+    private readonly apiService: ApiService
   ) { }
 
   async ngOnInit() {
@@ -48,24 +49,15 @@ export class ProfilePage implements OnInit {
   public async getPrimaryAccount(): Promise<void> {
     this.accounts = await this.databaseService.listAccounts();
     this.primaryAccount = await this.databaseService.getPrimaryAccount();
-    if (!this.primaryAccount) {
-      localStorage.removeItem("authToken");
-    }
-    const authToken = localStorage.getItem("authToken");
-    if (authToken) {
-      await this.getAccountInfo(authToken);
+    if (this.primaryAccount) {
+      await this.getAccountInfo();
     }
   }
 
-  public async getAccountInfo(authToken: string) {
+  public async getAccountInfo() {
     this.isLoading = true;
-    const client = getClient(this.primaryAccount?.server as string);
     const { username, server } = this.primaryAccount as Account;
-    const personDetailsForm: GetPersonDetails = {
-      auth: authToken,
-      username: `${username}@${server}`
-    }
-    this.accountDetails = await client.getPersonDetails(personDetailsForm);
+    this.accountDetails = await this.apiService.getPersonDetails(username, server);
     this.isLoading = false;
   }
 

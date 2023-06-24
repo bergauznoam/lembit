@@ -12,6 +12,7 @@ import { IonicModule } from '@ionic/angular';
 import { Login, LoginResponse } from "lemmy-js-client";
 
 import { DatabaseService } from '@services/database.service';
+import { ApiService } from "@services/api.service";
 import { getClient } from "@lemmy";
 
 @Component({
@@ -31,6 +32,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly databaseService: DatabaseService,
+    private readonly apiService: ApiService
 
   ) { }
 
@@ -98,20 +100,8 @@ export class LoginComponent implements OnInit {
     const baseUrl = this.loginForm.get('server')?.value;
     const username_or_email = this.loginForm.get("email")?.value;
     const password = this.loginForm.get("password")?.value;
-    const loginForm: Login = { username_or_email, password }
-    const client = getClient(baseUrl);
     try {
-      const response: LoginResponse = await client.login(loginForm);
-      if (!response.jwt) {
-        throw new Error()
-      }
-      localStorage.setItem("authToken", response.jwt);
-      await this.databaseService.addAccount({
-        username: username_or_email,
-        password,
-        server: baseUrl,
-        primary: !(await this.databaseService.listAccounts()).length
-      });
+      await this.apiService.login(username_or_email, password, baseUrl);
       this.onAccountCreated.next();
     } catch (e) {
       this.isToastOpen = true;

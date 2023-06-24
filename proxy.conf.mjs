@@ -9,18 +9,17 @@ const logProvider = () => {
     ),
     transports: [new winston.transports.Console()],
   });
-}
+};
 
 export default {
   "/api/*": {
     target: "https://lemmy.world",
     changeOrigin: true,
     secure: true,
-    "pathRewrite": {
-      "^/api/lemmy.world": ""
+    pathRewrite: {
+      "^/api/lemmy.world": "",
     },
     logLevel: "debug",
     logProvider: logProvider,
-    
-  }
+  },
 };
