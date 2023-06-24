@@ -16,6 +16,10 @@ import { FormsModule } from '@angular/forms';
 import { PostComponent } from "@components/post/post.component";
 import { ApiService } from '@services/api.service';
 import { Account } from '@models/account.model';
+import { AppState } from '@state/types/appstate.type';
+import { Store } from '@ngrx/store';
+import { Observable, tap } from 'rxjs';
+import { selectPrimaryAccount } from '@state/selectors/accounts.selectors';
 
 
 @Component({
@@ -28,24 +32,46 @@ import { Account } from '@models/account.model';
 })
 export class FeedPage implements OnInit {
   @ViewChild(IonModal) modal!: IonModal;
-  private account!: Account | undefined;
   private page: number = 1;
   private limit: number = 20;
   private type: ListingType = 'Local';
   private sort: SortType = "Hot";
 
-  public posts: PostView[] = [];
   public isModalOpen: boolean = false;
   public activePost!: PostView | null;
 
+  private primaryAccount$: Observable<Account | undefined>;
+  public primaryAccount!: Account | undefined;
+  public posts: PostView[] = [];
+
+
   constructor(
+    private readonly store: Store<AppState>,
     private readonly databaseService: DatabaseService,
     private readonly apiService: ApiService
-  ) { }
+  ) {
+    this.primaryAccount$ = this.store.select(selectPrimaryAccount);
+  }
 
   public async ngOnInit(): Promise<void> {
-    this.account = await this.databaseService.getPrimaryAccount();
-    await this.getPosts();
+    this.subscribeToPrimaryAccount();
+  }
+
+  private subscribeToPrimaryAccount(): void {
+    this.primaryAccount$
+      .pipe(
+        tap((account) => {
+          if (account) {
+            this.databaseService.loadStarredCommunities(account.id as number);
+          }
+        })
+      )
+      .subscribe(async (account) => {
+        this.primaryAccount = account;
+        this.page = 0;
+        this.posts = [];
+        await this.getPosts();
+      });
   }
 
   private async getPosts(): Promise<void> {
