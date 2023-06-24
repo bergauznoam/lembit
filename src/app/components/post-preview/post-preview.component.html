@@ -1,5 +1,5 @@
 <ion-card>
-  <ion-card-header>
+  <ion-card-header (click)="openPost()">
     <ion-card-title>{{ title }} </ion-card-title>
     <ion-card-subtitle>
       <div class="community">
@@ -14,7 +14,7 @@
     </ion-card-subtitle>
   </ion-card-header>
 
-  <ion-card-content>
+  <ion-card-content (click)="openPost()">
     <ion-thumbnail slot="start" *ngIf="thumbnail">
       <img [alt]="title" [src]="thumbnail" />
     </ion-thumbnail>

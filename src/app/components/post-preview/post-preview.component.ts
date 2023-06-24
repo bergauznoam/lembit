@@ -6,6 +6,7 @@ import { PostView } from 'lemmy-js-client';
 import { calculateTimePassed } from "@utils";
 import { getClient } from "@lemmy";
 import { IUpdatePostScore } from '@interfaces/update-post-score.interface';
+import { IOpenPost } from '@interfaces/open-post.interface';
 
 @Component({
   selector: 'app-post-preview',
@@ -17,6 +18,7 @@ import { IUpdatePostScore } from '@interfaces/update-post-score.interface';
 export class PostPreviewComponent {
   @Input() public post!: PostView;
   @Output() public onUpdatePostScore: EventEmitter<IUpdatePostScore> = new EventEmitter()
+  @Output() setOpen: EventEmitter<IOpenPost> = new EventEmitter();
 
   public get thumbnail(): string | undefined {
     return this.post.post.thumbnail_url;
@@ -31,7 +33,7 @@ export class PostPreviewComponent {
   }
 
   public get title(): string {
-    const {embed_title, name} = this.post.post;
+    const { embed_title, name } = this.post.post;
     return embed_title || name;
   }
 
@@ -85,7 +87,7 @@ export class PostPreviewComponent {
         score = (this.myVote === -1) ? 0 : (this.myVote ? -1 : -1);
         break;
     }
-    
+
     this.onUpdatePostScore.next({
       id: this.post.post.id,
       score
@@ -104,5 +106,9 @@ export class PostPreviewComponent {
       id: this.post.post.id,
       score: !this.myVote ? -1 : this.myVote * -1
     });
+  }
+
+  public openPost(): void {
+    this.setOpen.next({ isOpen: true, post: this.post });
   }
 }
