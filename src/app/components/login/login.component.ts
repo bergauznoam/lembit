@@ -9,11 +9,9 @@ import {
   AbstractControl
 } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { Login, LoginResponse } from "lemmy-js-client";
 
 import { DatabaseService } from '@services/database.service';
 import { ApiService } from "@services/api.service";
-import { getClient } from "@lemmy";
 
 @Component({
   selector: 'app-login',

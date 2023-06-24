@@ -8,7 +8,6 @@ import { IonicModule } from "@ionic/angular";
 
 import { DatabaseService, Account } from "@services/database.service";
 import { LoginComponent } from "@components/login/login.component";
-import { getClient } from "@lemmy";
 import { calculateTimePassed } from "@utils";
 import { ApiService } from "@services/api.service";
 import { GetPersonDetailsResponse } from "lemmy-js-client";

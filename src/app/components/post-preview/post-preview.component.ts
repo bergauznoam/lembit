@@ -4,7 +4,6 @@ import { IonicModule } from '@ionic/angular';
 import { PostView } from 'lemmy-js-client';
 
 import { calculateTimePassed } from "@utils";
-import { getClient } from "@lemmy";
 import { IUpdatePostScore } from '@interfaces/update-post-score.interface';
 import { IOpenPost } from '@interfaces/open-post.interface';
 

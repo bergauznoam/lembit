@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
-import { PostView, GetPost, GetPostResponse } from 'lemmy-js-client';
+import { PostView } from 'lemmy-js-client';
 
-import { getClient } from "@lemmy";
 import { Account, DatabaseService } from '@services/database.service';
 import { IOpenPost } from '@interfaces/open-post.interface';
 
