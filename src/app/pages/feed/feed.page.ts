@@ -96,9 +96,22 @@ export class FeedPage implements OnInit {
   }
 
   public async onUpdatePostScore({ id, score }: IUpdatePostScore): Promise<void> {
+    this.posts = this.posts
+      .map(post =>
+        post.post.id === id ?
+          {
+            ...post,
+            my_vote: score,
+            counts: {
+              ...post.counts,
+              score: post.counts.score + score
+            }
+          }
+          : post
+      );
     const updated_post = await this.apiService.likePost(id, score);
     if (updated_post) {
-      this.posts = this.posts.map(post => post.post.id === id ? updated_post : post)
+      this.posts = this.posts.map(post => post.post.id === id ? updated_post : post);
     }
   }
 
