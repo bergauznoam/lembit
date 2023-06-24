@@ -8,7 +8,7 @@ import { IonicModule } from "@ionic/angular";
 import { Store } from '@ngrx/store';
 import { Observable, filter, map, tap } from "rxjs";
 
-import { DatabaseService, Account } from "@services/database.service";
+import { DatabaseService } from "@services/database.service";
 import { LoginComponent } from "@components/login/login.component";
 import { calculateTimePassed } from "@utils";
 import { ApiService } from "@services/api.service";
@@ -19,6 +19,7 @@ import {
   selectAccounts,
   selectPrimaryAccount
 } from "@state/selectors/accounts.selectors";
+import { Account } from "@models/account.model";
 
 @Component({
   selector: "app-profile",

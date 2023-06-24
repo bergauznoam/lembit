@@ -8,13 +8,14 @@ import {
   PostView,
 } from "lemmy-js-client";
 
-import { Account, DatabaseService } from '@services/database.service';
+import { DatabaseService } from '@services/database.service';
 import { PostPreviewComponent } from "@components/post-preview/post-preview.component";
 import { IUpdatePostScore } from "@interfaces/update-post-score.interface";
 import { IOpenPost } from "@interfaces/open-post.interface"
 import { FormsModule } from '@angular/forms';
 import { PostComponent } from "@components/post/post.component";
 import { ApiService } from '@services/api.service';
+import { Account } from '@models/account.model';
 
 
 @Component({

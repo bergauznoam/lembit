@@ -1,27 +1,10 @@
 import { Injectable } from "@angular/core";
+import { Account } from "@models/account.model";
 import { Store } from "@ngrx/store";
 import { LoadAccounts } from "@state/actions/accounts.actions";
 import { AppState } from "@state/types/appstate.type";
 import Dexie, { Table } from "dexie";
 
-export interface TodoList {
-    id?: number;
-    title: string;
-}
-export interface TodoItem {
-    id?: number;
-    todoListId: number;
-    title: string;
-    done?: boolean;
-}
-
-export interface Account {
-    id?: number;
-    username: string;
-    token: string;
-    server: string;
-    primary: boolean;
-}
 
 export interface StarredCommunity {
     id?: number;

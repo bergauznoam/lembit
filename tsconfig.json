@@ -45,6 +45,9 @@
         "src/app/store/reducers/*",
         "src/app/store/types/*",
         "src/app/store/selectors/*"
+      ],
+      "@models/*": [
+        "src/app/models/*"
       ]
     }
   },

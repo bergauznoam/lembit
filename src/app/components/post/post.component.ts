@@ -3,8 +3,9 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { PostView } from 'lemmy-js-client';
 
-import { Account, DatabaseService } from '@services/database.service';
+import { DatabaseService } from '@services/database.service';
 import { IOpenPost } from '@interfaces/open-post.interface';
+import { Account } from '@models/account.model';
 
 @Component({
   selector: 'app-post',

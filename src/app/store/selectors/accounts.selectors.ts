@@ -1,7 +1,6 @@
 import { createSelector } from '@ngrx/store';
-import { Account } from '@services/database.service';
+import { Account } from '@models/account.model';
 import { AppState } from '@state/appstate.type';
-// import { AppState } from '@state/appstate.type';
 
 export const selectAccounts = (state: AppState) => state.accounts;
 

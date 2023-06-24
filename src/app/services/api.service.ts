@@ -14,7 +14,8 @@ import {
 } from "lemmy-js-client";
 
 import { environment } from "@environment";
-import { Account, DatabaseService } from '@services/database.service';
+import { DatabaseService } from '@services/database.service';
+import { Account } from "@models/account.model";
 
 
 @Injectable({

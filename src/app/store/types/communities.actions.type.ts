@@ -1,0 +1,1 @@
+export const LOAD_COMMUNITIES = "[Communities] Load communities";

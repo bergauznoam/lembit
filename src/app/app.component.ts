@@ -3,9 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
-import { Account, DatabaseService, StarredCommunity } from '@services/database.service';
+import { DatabaseService, StarredCommunity } from '@services/database.service';
 import { ICommunityItem } from "@interfaces/community-item.interface";
 import { ApiService } from '@services/api.service';
+import { Account } from '@models/account.model';
 
 @Component({
   selector: 'app-root',

@@ -1,5 +1,5 @@
 import { Action } from "@ngrx/store";
-import { Account } from "@services/database.service";
+import { Account } from "@models/account.model";
 import {
     LoadAccounts,
 } from "@state/accounts.actions";
