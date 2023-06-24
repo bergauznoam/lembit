@@ -28,6 +28,7 @@ export class AppComponent implements OnInit {
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
   public async ngOnInit(): Promise<void> {
+    await this.databaseService.load();
     const account = await this.databaseService.getPrimaryAccount();
     if (account) {
       this.account = account;

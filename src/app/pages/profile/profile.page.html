@@ -3,10 +3,7 @@
 </ion-header>
 <ion-content [fullscreen]="true">
   <ion-content [ngSwitch]="hasAccount">
-    <app-login
-      *ngSwitchCase="false"
-      (onAccountCreated)="getPrimaryAccount()"
-    ></app-login>
+    <app-login *ngSwitchCase="false"></app-login>
     <ng-container *ngSwitchCase="true">
       <ng-container [ngSwitch]="isLoading">
         <ng-container *ngSwitchCase="true">

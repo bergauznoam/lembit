@@ -37,7 +37,6 @@ export class FeedPage implements OnInit {
   public isModalOpen: boolean = false;
   public activePost!: PostView | null;
 
-
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly apiService: ApiService

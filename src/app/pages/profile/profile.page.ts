@@ -5,12 +5,20 @@ import {
   ReactiveFormsModule,
 } from "@angular/forms";
 import { IonicModule } from "@ionic/angular";
+import { Store } from '@ngrx/store';
+import { Observable, filter, map, tap } from "rxjs";
 
 import { DatabaseService, Account } from "@services/database.service";
 import { LoginComponent } from "@components/login/login.component";
 import { calculateTimePassed } from "@utils";
 import { ApiService } from "@services/api.service";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
+import { AppState } from "@state/appstate.type";
+import { LoadAccounts } from "@state/accounts.actions";
+import {
+  selectAccounts,
+  selectPrimaryAccount
+} from "@state/selectors/accounts.selectors";
 
 @Component({
   selector: "app-profile",
@@ -26,31 +34,36 @@ import { GetPersonDetailsResponse } from "lemmy-js-client";
   ]
 })
 export class ProfilePage implements OnInit {
-  public accounts: Account[] = [];
+  public hasAccount: boolean = false;
+  public isLoading: boolean = false;
+  public accounts$: Observable<Account[]>;
+  public primaryAccount$: Observable<Account | undefined>;
   public primaryAccount!: Account | undefined;
   public accountDetails!: GetPersonDetailsResponse;
-  public isLoading: boolean = true;
 
   constructor(
+    private readonly store: Store<AppState>,
     private readonly databaseService: DatabaseService,
     private readonly apiService: ApiService
-  ) { }
-
-  async ngOnInit() {
-    this.accounts = await this.databaseService.listAccounts();
-    await this.getPrimaryAccount();
+  ) {
+    this.accounts$ = this.store.select(selectAccounts);
+    this.primaryAccount$ = this.store.select(selectPrimaryAccount)
   }
 
-  public get hasAccount(): boolean {
-    return this.accounts.length > 0;
+  public async ngOnInit(): Promise<void> {
+    this.subscribeToPrimaryAccount();
   }
 
-  public async getPrimaryAccount(): Promise<void> {
-    this.accounts = await this.databaseService.listAccounts();
-    this.primaryAccount = await this.databaseService.getPrimaryAccount();
-    if (this.primaryAccount) {
-      await this.getAccountInfo();
-    }
+  public subscribeToPrimaryAccount() {
+    this.primaryAccount$
+      .pipe(
+        tap(account => this.hasAccount = !!account),
+        filter(account => !!account)
+      )
+      .subscribe(async (account) => {
+        this.primaryAccount = account;
+        await this.getAccountInfo();
+      });
   }
 
   public async getAccountInfo() {
@@ -58,14 +71,5 @@ export class ProfilePage implements OnInit {
     const { username, server } = this.primaryAccount as Account;
     this.accountDetails = await this.apiService.getPersonDetails(username, server);
     this.isLoading = false;
-  }
-
-  public async setPrimaryAccount(id: number): Promise<void> {
-
-  }
-
-  public getAccountAge(): string {
-    const { published } = this.accountDetails.person_view.person;
-    return calculateTimePassed(published);
   }
 }

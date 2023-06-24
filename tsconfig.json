@@ -33,14 +33,18 @@
       "@environment": [
         "src/environments/environment"
       ],
-      "@lemmy": [
-        "src/app/lemmy"
-      ],
       "@utils": [
         "src/app/utils"
       ],
       "@interfaces/*": [
         "src/app/interfaces/*"
+      ],
+      "@state/*": [
+        "src/app/store/*",
+        "src/app/store/actions/*",
+        "src/app/store/reducers/*",
+        "src/app/store/types/*",
+        "src/app/store/selectors/*"
       ]
     }
   },

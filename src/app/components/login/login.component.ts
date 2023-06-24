@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -21,8 +21,6 @@ import { ApiService } from "@services/api.service";
   imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule]
 })
 export class LoginComponent implements OnInit {
-
-  @Output() onAccountCreated: EventEmitter<void> = new EventEmitter();
 
   public loginForm!: FormGroup;
   public isToastOpen: boolean = false;
@@ -100,7 +98,6 @@ export class LoginComponent implements OnInit {
     const password = this.loginForm.get("password")?.value;
     try {
       await this.apiService.login(username_or_email, password, baseUrl);
-      this.onAccountCreated.next();
     } catch (e) {
       this.isToastOpen = true;
     }
