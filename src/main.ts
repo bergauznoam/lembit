@@ -8,7 +8,10 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
+
 import { accountsReducer } from '@state/accounts.reducer';
+import { communitiesReducer } from '@state/communities.reducer';
+
 
 if (environment.production) {
   enableProdMode();
@@ -20,7 +23,8 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(
       IonicModule.forRoot({}),
       StoreModule.forRoot({
-        accounts: accountsReducer
+        accounts: accountsReducer,
+        communities: communitiesReducer
       })
     ),
     provideRouter(routes),

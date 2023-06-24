@@ -1,12 +1,13 @@
 import { Account } from "@models/account.model";
+import { StarredCommunity } from "@models/starredCommunity.model";
 import { Action } from "@ngrx/store";
 
 import {
-    LOAD_ACCOUNTS,
-} from "@state/accounts.actions.types";
+    LOAD_COMMUNITIES
+} from "@state/communities.actions.type";
 
-export class LoadAccounts implements Action {
-    readonly type = LOAD_ACCOUNTS;
+export class LoadCommunities implements Action {
+    readonly type = LOAD_COMMUNITIES;
 
-    constructor(public readonly accounts: Account[]) { }
+    constructor(public readonly communities: StarredCommunity[]) { }
 }

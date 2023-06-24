@@ -48,7 +48,7 @@ export class ProfilePage implements OnInit {
     private readonly apiService: ApiService
   ) {
     this.accounts$ = this.store.select(selectAccounts);
-    this.primaryAccount$ = this.store.select(selectPrimaryAccount)
+    this.primaryAccount$ = this.store.select(selectPrimaryAccount);
   }
 
   public async ngOnInit(): Promise<void> {

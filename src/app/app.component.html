@@ -3,12 +3,16 @@
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
         <ion-list>
-          <ng-container *ngIf="account">
-            <ion-list-header>{{ account.username }}</ion-list-header>
-            <ion-note>{{ account.username }}@{{ account.server }}</ion-note>
+          <ng-container *ngIf="primaryAccount">
+            <ion-list-header>{{ primaryAccount.username }}</ion-list-header>
+            <ion-note
+              >{{ primaryAccount.username }}@{{
+                primaryAccount.server
+              }}</ion-note
+            >
           </ng-container>
         </ion-list>
-        <ion-list id="labels-list" *ngIf="account">
+        <ion-list id="labels-list" *ngIf="primaryAccount">
           <ion-list-header>Favourites</ion-list-header>
           <ion-menu-toggle
             auto-hide="false"
@@ -43,7 +47,7 @@
           >
             <ion-item lines="none" detail="false">
               <ion-button
-                *ngIf="account && !isStarredCommunity(community)"
+                *ngIf="primaryAccount && !isStarredCommunity(community)"
                 class="toggle-start-community"
                 fill="clear"
                 (click)="starCommunity($event, community)"

@@ -3,10 +3,15 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
-import { DatabaseService, StarredCommunity } from '@services/database.service';
+import { DatabaseService } from '@services/database.service';
 import { ICommunityItem } from "@interfaces/community-item.interface";
 import { ApiService } from '@services/api.service';
 import { Account } from '@models/account.model';
+import { StarredCommunity } from '@models/starredCommunity.model';
+import { Observable, filter, tap } from 'rxjs';
+import { AppState } from '@state/types/appstate.type';
+import { Store } from '@ngrx/store';
+import { selectPrimaryAccount } from '@state/selectors/accounts.selectors';
 
 @Component({
   selector: 'app-root',
@@ -16,34 +21,50 @@ import { Account } from '@models/account.model';
   imports: [IonicModule, RouterLink, RouterLinkActive, CommonModule],
 })
 export class AppComponent implements OnInit {
-  public account!: Account;
-
-  constructor(
-    private readonly databaseService: DatabaseService,
-    private readonly apiService: ApiService
-  ) { }
-
+  private primaryAccount$: Observable<Account | undefined>;
+  private starredCommunities$: Observable<StarredCommunity[]>;
+  public primaryAccount!: Account | undefined;
   public communities: ICommunityItem[] = [];
   public starredCommunities: StarredCommunity[] = [];
 
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
-
-  public async ngOnInit(): Promise<void> {
-    await this.databaseService.load();
-    const account = await this.databaseService.getPrimaryAccount();
-    if (account) {
-      this.account = account;
-      this.getStarredCommunites(account.id as number);
-    }
-    await this.getCommunities();
+  constructor(
+    private readonly store: Store<AppState>,
+    private readonly databaseService: DatabaseService,
+    private readonly apiService: ApiService
+  ) {
+    this.primaryAccount$ = this.store.select(selectPrimaryAccount);
+    this.starredCommunities$ = this.store.select((state) => state.communities);
   }
 
-  private async getStarredCommunites(user_id: number): Promise<void> {
-    this.starredCommunities = await this.databaseService.listCommunities(user_id);
+  public async ngOnInit(): Promise<void> {
+    this.subscribeToPrimaryAccount();
+    this.subscribeToCommunities();
+    await this.databaseService.load();
+  }
+
+  private subscribeToPrimaryAccount(): void {
+    this.primaryAccount$
+      .pipe(
+        tap((account) => {
+          if (account) {
+            this.databaseService.loadStarredCommunities(account.id as number);
+          }
+        })
+      )
+      .subscribe(async (account) => {
+        this.primaryAccount = account;
+        await this.getCommunities();
+      });
+  }
+
+  private subscribeToCommunities(): void {
+    this.starredCommunities$
+      .subscribe(communities => this.starredCommunities = communities);
   }
 
   private async getCommunities(): Promise<void> {
-    this.communities = (await this.apiService.getCommunities("Subscribed", 50, 1))
+    const type = this.primaryAccount ? "Subscribed" : "Local";
+    this.communities = (await this.apiService.getCommunities(type, 50, 1))
       .filter(community =>
         !community.blocked &&
         !community.community.deleted &&
@@ -61,22 +82,22 @@ export class AppComponent implements OnInit {
   }
 
   public async starCommunity($event: MouseEvent, community: ICommunityItem): Promise<void> {
-    if (!this.account) { return };
+    if (!this.primaryAccount?.id) { return };
     if (this.isStarredCommunity(community)) { return; }
     $event.stopPropagation();
-    const starred_community = await this.databaseService.addCommunity({
+    const comm = {
       title: community.title,
       icon: community.icon || "",
       url: community.url,
-      user_id: this.account.id as number
-    });
-    this.starredCommunities = [...this.starredCommunities, starred_community];
+      user_id: this.primaryAccount.id as number
+    };
+    await this.databaseService.addCommunity(this.primaryAccount?.id, comm);
   }
 
   public async deleteStarredCommunity($event: MouseEvent, id?: number): Promise<void> {
     $event.stopPropagation();
-    if (!id) { return; }
-    await this.databaseService.deleteCommunity(id);
+    if (!id || !this.primaryAccount?.id) { return; }
+    await this.databaseService.deleteCommunity(this.primaryAccount?.id, id);
     this.starredCommunities = this.starredCommunities.filter(community => community.id !== id);
   }
 }

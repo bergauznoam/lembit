@@ -1,18 +1,12 @@
 import { Injectable } from "@angular/core";
 import { Account } from "@models/account.model";
+import { StarredCommunity } from "@models/starredCommunity.model";
 import { Store } from "@ngrx/store";
 import { LoadAccounts } from "@state/actions/accounts.actions";
+import { LoadCommunities } from "@state/actions/communities.actions";
 import { AppState } from "@state/types/appstate.type";
 import Dexie, { Table } from "dexie";
 
-
-export interface StarredCommunity {
-    id?: number;
-    user_id: number;
-    title: string;
-    icon: string;
-    url: string;
-}
 
 @Injectable({
     providedIn: "root"
@@ -38,6 +32,11 @@ export class DatabaseService extends Dexie {
     public async loadAccounts(): Promise<void> {
         const accounts = await this.accounts.toArray();
         this.store.dispatch(new LoadAccounts(accounts));
+    }
+
+    public async loadStarredCommunities(user_id: number): Promise<void> {
+        const communities = await this.starred_community.filter(community => community.user_id === user_id).toArray();
+        this.store.dispatch(new LoadCommunities(communities));
     }
 
     public async getAccount(id?: number, username?: string): Promise<Account | undefined> {
@@ -69,17 +68,19 @@ export class DatabaseService extends Dexie {
         return await this.accounts.filter(account => account.primary).first();
     }
 
-    public async addCommunity(starred_community: StarredCommunity): Promise<StarredCommunity> {
+    public async addCommunity(user_id: number, starred_community: StarredCommunity): Promise<void> {
         const id = await this.starred_community.add(starred_community);
-        return await this.starred_community.get(id) as StarredCommunity;
+        await this.starred_community.get(id) as StarredCommunity;
+        await this.loadStarredCommunities(user_id);
     }
 
     public listCommunities(user_id: number): Promise<StarredCommunity[]> {
         return this.starred_community.filter(community => community.user_id === user_id).toArray();
     }
 
-    public async deleteCommunity(id: number): Promise<void> {
+    public async deleteCommunity(user_id: number, id: number): Promise<void> {
         await this.starred_community.delete(id);
+        await this.loadStarredCommunities(user_id);
     }
 
 
