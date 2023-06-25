@@ -5,6 +5,7 @@ import { InfiniteScrollCustomEvent, IonModal, IonicModule } from '@ionic/angular
 import {
   ListingType,
   PostView,
+  SortType,
 } from "lemmy-js-client";
 
 import { DatabaseService } from '@services/database.service';
@@ -20,7 +21,8 @@ import { Observable, tap } from 'rxjs';
 import { selectPrimaryAccount } from '@state/selectors/accounts.selectors';
 import { FeedSettings } from '@models/feed.model';
 import { selectPosts, selectFeedSettings, selectActivePost } from '@state/selectors/feed.selectors';
-import { LoadPosts, SetFeedPage, SetListingType, UpdatePost } from '@state/actions/feed.actions';
+import { LoadPosts, SetFeedPage, SetListingType, SetSortingType, UpdatePost } from '@state/actions/feed.actions';
+import { ISort } from '@interfaces/sort.interface';
 
 
 @Component({
@@ -37,7 +39,14 @@ export class FeedPage implements OnInit {
   public posts: PostView[] = [];
   public isModalOpen: boolean = false;
   public readonly listingTypes: ListingType[] = ["Subscribed", "Local", "All"];
+  public readonly sortingTypes: ISort[] = [
+    { sort: "Hot", icon: "flame-outline" },
+    { sort: "New", icon: "flash-outline" },
+    { sort: "TopDay", icon: "arrow-up-outline" },
+    { sort: "Active", icon: "trending-up-outline" }
+  ];
   public selectedListingType: ListingType = "Local";
+  public selectedSortingType: SortType = "Hot";
 
   private feedSettings!: FeedSettings;
 
@@ -131,5 +140,10 @@ export class FeedPage implements OnInit {
 
   public setListingType(listingType: ListingType): void {
     this.store.dispatch(new SetListingType(listingType));
+  }
+
+  public onSortingChange($event: Event) {
+    const { value } = $event.target as HTMLSelectElement;
+    this.store.dispatch(new SetSortingType(value as SortType));
   }
 }

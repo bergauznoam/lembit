@@ -1,19 +1,34 @@
 <ion-header [translucent]="true">
   <ion-toolbar> </ion-toolbar>
 </ion-header>
-<ion-header [translucent]="true">
-  <ion-toolbar class="listing-types">
-    <ion-button
-      *ngFor="let listingType of listingTypes"
-      [ngClass]="{'selected': listingType === selectedListingType}"
-      [fill]="listingType === selectedListingType ? 'fill' : 'clear'"
-      (click)="setListingType(listingType)"
-    >
-      {{listingType}}
-    </ion-button>
-  </ion-toolbar>
-</ion-header>
+<ion-toolbar class="listing-types">
+  <ion-button
+    *ngFor="let listingType of listingTypes"
+    [ngClass]="{'selected': listingType === selectedListingType}"
+    [fill]="listingType === selectedListingType ? 'fill' : 'clear'"
+    (click)="setListingType(listingType)"
+  >
+    {{listingType}}
+  </ion-button>
+</ion-toolbar>
 <ion-content [fullscreen]="true">
+  <ion-select
+    aria-label="Sort"
+    interface="popover"
+    [ngModel]="selectedSortingType"
+    fill="clear"
+    expandedIcon="chevron-up"
+    toggleIcon="chevron-down"
+    (ionChange)="onSortingChange($event)"
+  >
+    <ion-select-option
+      *ngFor="let sortType of sortingTypes"
+      [value]="sortType.sort"
+    >
+      <ion-icon [name]="sortType.icon"></ion-icon>
+      {{ sortType.sort }} Posts
+    </ion-select-option>
+  </ion-select>
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
