@@ -38,7 +38,7 @@ export class FeedPage implements OnInit {
   public primaryAccount!: Account | undefined;
   public posts: PostView[] = [];
   public isModalOpen: boolean = false;
-  public readonly listingTypes: ListingType[] = ["Subscribed", "Local", "All"];
+  public readonly _listingTypes: ListingType[] = ["Subscribed", "Local", "All"];
   public readonly sortingTypes: ISort[] = [
     { sort: "Hot", icon: "flame-outline" },
     { sort: "New", icon: "flash-outline" },
@@ -115,6 +115,13 @@ export class FeedPage implements OnInit {
     const { type_, sort, limit, page } = this.feedSettings;
     const posts = await this.apiService.getPosts(type_, sort, limit, page);
     this.store.dispatch(new LoadPosts(posts));
+  }
+
+  public get listingTypes(): ListingType[] {
+    if (this.primaryAccount) {
+      return this._listingTypes;
+    }
+    return this._listingTypes.filter(t => t !== "Subscribed");
   }
 
   public async onIonInfinite(event: any): Promise<any> {
