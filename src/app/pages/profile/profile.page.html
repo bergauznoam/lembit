@@ -49,6 +49,9 @@
               <img class="cake" src="assets/cake.svg" alt="cake" />
               {{accountDetails.person_view.person.published | date}}
             </ion-chip>
+            <ion-footer>
+              <ion-button color="danger" (click)="logout()">Logout</ion-button>
+            </ion-footer>
           </div>
         </ng-container>
       </ng-container>

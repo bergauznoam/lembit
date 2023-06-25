@@ -54,7 +54,7 @@ export class ApiService {
                 server: server,
             });
         } else {
-            await this.databaseService.updateAccountToken(account.id as number, this.authToken as string);
+            await this.databaseService.login(account.id as number, this.authToken as string);
         }
     }
 

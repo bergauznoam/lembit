@@ -55,9 +55,14 @@ export class DatabaseService extends Dexie {
         await this.loadAccounts();
     }
 
-    public async updateAccountToken(id: number, authToken: string): Promise<Account> {
-        await this.accounts.update(id, { token: authToken });
-        return await this.getAccount(id) as Account;
+    public async login(id: number, authToken: string): Promise<void> {
+        await this.accounts.update(id, { token: authToken, primary: true } as Partial<Account>);
+        await this.loadAccounts();
+    }
+
+    public async logout(id: number): Promise<void> {
+        await this.accounts.update(id, { token: undefined, primary: false } as Partial<Account>);
+        await this.loadAccounts();
     }
 
     public async listAccounts(): Promise<Account[]> {

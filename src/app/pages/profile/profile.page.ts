@@ -73,4 +73,8 @@ export class ProfilePage implements OnInit {
     this.accountDetails = await this.apiService.getPersonDetails(username, server);
     this.isLoading = false;
   }
+
+  public async logout(): Promise<void> {
+    await this.databaseService.logout(this.primaryAccount?.id as number);
+  }
 }
