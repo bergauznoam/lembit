@@ -6,6 +6,7 @@ import {
     LoadPosts,
     SetFeedPage,
     UpdatePost,
+    SetListingType,
 } from "@state/feed.actions";
 import {
     LOAD_POST,
@@ -13,6 +14,7 @@ import {
     LOAD_POSTS,
     SET_FEED_PAGE,
     UPDATE_POST,
+    SET_LISTING_TYPE,
 } from '@state/feed.actions.types';
 
 const initialState: Feed = {
@@ -30,6 +32,9 @@ export const feedReducer = (state: Feed = initialState, action: Action): Feed =>
     switch (action.type) {
         case LOAD_POSTS: {
             const { posts } = action as LoadPosts;
+            if (state.settings.page === 1) {
+                return { ...state, posts }
+            }
             return { ...state, posts: [...state.posts, ...posts] };
         }
         case SET_FEED_PAGE: {
@@ -46,6 +51,10 @@ export const feedReducer = (state: Feed = initialState, action: Action): Feed =>
         }
         case CLOSE_POST: {
             return { ...state, activePost: null };
+        }
+        case SET_LISTING_TYPE: {
+            const { type_ } = action as SetListingType;
+            return { ...state, settings: { ...state.settings, page: 1, type_ } }
         }
         default:
             return state;

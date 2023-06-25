@@ -1,12 +1,24 @@
 <ion-header [translucent]="true">
   <ion-toolbar> </ion-toolbar>
 </ion-header>
+<ion-header [translucent]="true">
+  <ion-toolbar class="listing-types">
+    <ion-button
+      *ngFor="let listingType of listingTypes"
+      [ngClass]="{'selected': listingType === selectedListingType}"
+      [fill]="listingType === selectedListingType ? 'fill' : 'clear'"
+      (click)="setListingType(listingType)"
+    >
+      {{listingType}}
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
 <ion-content [fullscreen]="true">
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-list>
-    <ion-item lines="none" *ngFor="let post of posts">
+  <ion-list role="feed">
+    <ion-item lines="none" *ngFor="let post of posts" role="post">
       <app-post-preview
         [post]="post"
         (onUpdatePostScore)="onUpdatePostScore($event)"

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { InfiniteScrollCustomEvent, IonModal, IonicModule } from '@ionic/angular';
 
 import {
+  ListingType,
   PostView,
 } from "lemmy-js-client";
 
@@ -19,7 +20,7 @@ import { Observable, tap } from 'rxjs';
 import { selectPrimaryAccount } from '@state/selectors/accounts.selectors';
 import { FeedSettings } from '@models/feed.model';
 import { selectPosts, selectFeedSettings, selectActivePost } from '@state/selectors/feed.selectors';
-import { LoadPosts, SetFeedPage, UpdatePost } from '@state/actions/feed.actions';
+import { LoadPosts, SetFeedPage, SetListingType, UpdatePost } from '@state/actions/feed.actions';
 
 
 @Component({
@@ -35,6 +36,8 @@ export class FeedPage implements OnInit {
   public primaryAccount!: Account | undefined;
   public posts: PostView[] = [];
   public isModalOpen: boolean = false;
+  public readonly listingTypes: ListingType[] = ["Subscribed", "Local", "All"];
+  public selectedListingType: ListingType = "Local";
 
   private feedSettings!: FeedSettings;
 
@@ -87,6 +90,7 @@ export class FeedPage implements OnInit {
     this.feedSettings$
       .subscribe(async (settings) => {
         this.feedSettings = settings;
+        this.selectedListingType = settings.type_;
         await this.getPosts();
       });
   }
@@ -123,5 +127,9 @@ export class FeedPage implements OnInit {
     if (updated_post) {
       this.store.dispatch(new UpdatePost(id, updated_post))
     }
+  }
+
+  public setListingType(listingType: ListingType): void {
+    this.store.dispatch(new SetListingType(listingType));
   }
 }
