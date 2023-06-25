@@ -9,7 +9,6 @@ import {
 import { DatabaseService } from '@services/database.service';
 import { PostPreviewComponent } from "@components/post-preview/post-preview.component";
 import { IUpdatePostScore } from "@interfaces/update-post-score.interface";
-import { IOpenPost } from "@interfaces/open-post.interface"
 import { FormsModule } from '@angular/forms';
 import { PostComponent } from "@components/post/post.component";
 import { ApiService } from '@services/api.service';
@@ -19,7 +18,7 @@ import { Store } from '@ngrx/store';
 import { Observable, tap } from 'rxjs';
 import { selectPrimaryAccount } from '@state/selectors/accounts.selectors';
 import { FeedSettings } from '@models/feed.model';
-import { selectPosts, selectFeedSettings } from '@state/selectors/feed.selectors';
+import { selectPosts, selectFeedSettings, selectActivePost } from '@state/selectors/feed.selectors';
 import { LoadPosts, SetFeedPage, UpdatePost } from '@state/actions/feed.actions';
 
 
@@ -36,10 +35,10 @@ export class FeedPage implements OnInit {
   public primaryAccount!: Account | undefined;
   public posts: PostView[] = [];
   public isModalOpen: boolean = false;
-  public activePost!: PostView | null;
 
   private feedSettings!: FeedSettings;
 
+  private activePost$: Observable<number | null>;
   private posts$: Observable<PostView[]>;
   private feedSettings$: Observable<FeedSettings>;
   private primaryAccount$: Observable<Account | undefined>;
@@ -53,12 +52,14 @@ export class FeedPage implements OnInit {
     this.primaryAccount$ = this.store.select(selectPrimaryAccount);
     this.posts$ = this.store.select(selectPosts);
     this.feedSettings$ = this.store.select(selectFeedSettings);
+    this.activePost$ = this.store.select(selectActivePost);
   }
 
   public async ngOnInit(): Promise<void> {
     this.subscribeToPrimaryAccount();
     this.subsribeToFeedSettings();
     this.subscribeToPosts();
+    this.subscribeToActivePost();
   }
 
   private subscribeToPrimaryAccount(): void {
@@ -90,6 +91,13 @@ export class FeedPage implements OnInit {
       });
   }
 
+  private subscribeToActivePost(): void {
+    this.activePost$
+      .subscribe(id => {
+        this.isModalOpen = !!id;
+      });
+  }
+
   private async getPosts(): Promise<void> {
     const { type_, sort, limit, page } = this.feedSettings;
     const posts = await this.apiService.getPosts(type_, sort, limit, page);
@@ -115,10 +123,5 @@ export class FeedPage implements OnInit {
     if (updated_post) {
       this.store.dispatch(new UpdatePost(id, updated_post))
     }
-  }
-
-  public setOpen({ isOpen, post }: IOpenPost) {
-    this.activePost = post;
-    this.isModalOpen = isOpen;
   }
 }

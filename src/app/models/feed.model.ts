@@ -9,5 +9,6 @@ export interface FeedSettings {
 
 export interface Feed {
     posts: PostView[];
-    settings: FeedSettings
+    settings: FeedSettings;
+    activePost: number | null;
 }

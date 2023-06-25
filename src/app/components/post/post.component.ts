@@ -1,13 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Output, EventEmitter, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
 import { IonContent, IonicModule } from '@ionic/angular';
 import { CommunityModeratorView, PostView } from 'lemmy-js-client';
 import { register } from 'swiper/element/bundle';
 
 import { DatabaseService } from '@services/database.service';
-import { IOpenPost } from '@interfaces/open-post.interface';
 import { ApiService } from '@services/api.service';
 import { calculateTimePassed } from '@utils';
+import { Store } from '@ngrx/store';
+import { AppState } from '@state/types/appstate.type';
+import { Observable, takeUntil } from 'rxjs';
+import { selectActivePost } from '@state/selectors/feed.selectors';
+import { ClosePost } from '@state/actions/feed.actions';
 
 register();
 
@@ -18,32 +22,52 @@ register();
   standalone: true,
   imports: [IonicModule, CommonModule],
 })
-export class PostComponent implements OnInit {
+export class PostComponent implements OnInit, OnDestroy {
 
-  @Input() post_id!: number;
-  @Output() setOpen: EventEmitter<IOpenPost> = new EventEmitter();
   @ViewChild('prepreviewContentview') previewContent!: IonContent;
+
+  private onDestroy$: EventEmitter<void>;
+  private activePost$: Observable<number | null>;
 
   public isLoading: boolean = true;
   public post!: PostView;
   public moderators: CommunityModeratorView[] = [];
 
   constructor(
+    private readonly store: Store<AppState>,
     private readonly apiService: ApiService,
     private readonly databaseService: DatabaseService,
-  ) { }
+  ) {
+    this.onDestroy$ = new EventEmitter<void>();
+    this.activePost$ = this.store.select(selectActivePost);
+  }
 
   public async ngOnInit(): Promise<void> {
-    await this.getPost();
+    await this.subscribeToActivePost();
+  }
+
+  public ngOnDestroy(): void {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
+  }
+
+  private subscribeToActivePost(): void {
+    this.activePost$
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(async (id) => {
+        if (id) {
+          await this.getPost(id);
+        }
+      });
   }
 
   public closePost(): void {
-    this.setOpen.next({ isOpen: false, post: null });
+    this.store.dispatch(new ClosePost());
   }
 
-  private async getPost(): Promise<void> {
+  private async getPost(id: number): Promise<void> {
     this.isLoading = true;
-    const [post, moderators] = await this.apiService.getPost(this.post_id);
+    const [post, moderators] = await this.apiService.getPost(id);
     this.post = post;
     this.moderators = moderators;
     this.isLoading = false;

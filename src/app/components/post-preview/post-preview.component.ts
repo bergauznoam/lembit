@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
+import { Store } from '@ngrx/store';
+
 import { PostView } from 'lemmy-js-client';
 
 import { calculateTimePassed } from "@utils";
 import { IUpdatePostScore } from '@interfaces/update-post-score.interface';
-import { IOpenPost } from '@interfaces/open-post.interface';
+import { AppState } from '@state/types/appstate.type';
+import { LoadPost } from '@state/actions/feed.actions';
 
 @Component({
   selector: 'app-post-preview',
@@ -16,8 +19,11 @@ import { IOpenPost } from '@interfaces/open-post.interface';
 })
 export class PostPreviewComponent {
   @Input() public post!: PostView;
-  @Output() public onUpdatePostScore: EventEmitter<IUpdatePostScore> = new EventEmitter()
-  @Output() setOpen: EventEmitter<IOpenPost> = new EventEmitter();
+  @Output() public onUpdatePostScore: EventEmitter<IUpdatePostScore> = new EventEmitter();
+
+  constructor(
+    private readonly store: Store<AppState>
+  ) { }
 
   public get thumbnail(): string | undefined {
     const image = this.post.post.thumbnail_url || this.post.post.url || "";
@@ -129,7 +135,7 @@ export class PostPreviewComponent {
   }
 
   public openPost(): void {
-    this.setOpen.next({ isOpen: true, post: this.post });
+    this.store.dispatch(new LoadPost(this.post.post.id));
   }
 
   public openLink($event: MouseEvent, url: string): void {
