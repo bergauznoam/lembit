@@ -25,7 +25,9 @@
 </ion-header>
 <ion-content class="ion-padding" [fullscreen]="true">
   <h3 class="title">{{ post.post.name }}</h3>
-  <img *ngIf="post.post.thumbnail_url" [src]="post.post.thumbnail_url" alt="" />
+  <div class="image-wrapper">
+    <img class="image" *ngIf="thumbnail" [src]="thumbnail" alt="" />
+  </div>
   <p *ngIf="post.post.body">{{ post.post.body }}</p>
   <ng-container *ngIf="link">
     <a class="link" [href]="link" target="_blank">

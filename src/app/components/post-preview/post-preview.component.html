@@ -17,7 +17,7 @@
   <ion-card-content>
     <ng-container (click)="openPost()">
       <ion-thumbnail slot="start" *ngIf="thumbnail">
-        <img [alt]="title" [src]="thumbnail" />
+        <img class="image" [alt]="title" [src]="thumbnail" />
       </ion-thumbnail>
       <span *ngIf="body" class="body">{{ body }}</span>
     </ng-container>

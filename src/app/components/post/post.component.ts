@@ -62,6 +62,14 @@ export class PostComponent implements OnInit {
     return this.post.subscribed === "Subscribed"
   }
 
+  public get thumbnail(): string | undefined {
+    const image = this.post.post.thumbnail_url || this.post.post.url || "";
+    if ((/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(image)) {
+      return image;
+    }
+    return undefined;
+  }
+
   public get link(): string | undefined {
     const url = this.post.post.url || "";
     if (!(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(url)) {

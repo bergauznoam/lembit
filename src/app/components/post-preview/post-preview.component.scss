@@ -49,6 +49,12 @@ ion-thumbnail {
     font-size: 0.8em;
 }
 
+.image {
+    max-height: 25em;
+    margin: 0 auto;
+    display: block;
+}
+
 .link {
     display: flex;
     flex-direction: row;

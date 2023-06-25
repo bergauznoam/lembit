@@ -37,6 +37,16 @@
     padding: 0 1.5em;
 }
 
+.image-wrapper {
+    max-height: 25em;
+    background-color: var(--ion-color-light);
+    .image {
+        max-height: inherit;
+        margin: 0 auto;
+        display: block;
+    }
+}
+
 .link {
     display: flex;
     flex-direction: row;
