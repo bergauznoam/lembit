@@ -6,20 +6,19 @@ import { Store } from '@ngrx/store';
 import { PostView } from 'lemmy-js-client';
 
 import { calculateTimePassed } from "@utils";
-import { IUpdatePostScore } from '@interfaces/update-post-score.interface';
 import { AppState } from '@state/types/appstate.type';
 import { LoadPost } from '@state/actions/feed.actions';
+import { PostFooterComponent } from '@components/post-footer/post-footer.component';
 
 @Component({
   selector: 'app-post-preview',
   templateUrl: './post-preview.component.html',
   styleUrls: ['./post-preview.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, PostFooterComponent],
 })
 export class PostPreviewComponent {
   @Input() public post!: PostView;
-  @Output() public onUpdatePostScore: EventEmitter<IUpdatePostScore> = new EventEmitter();
 
   constructor(
     private readonly store: Store<AppState>
@@ -70,68 +69,6 @@ export class PostPreviewComponent {
   public get body(): string {
     const { body } = this.post.post;
     return body ? body.length > 150 ? `${body.slice(0, 147)}...` : body : "";
-  }
-
-  public get commentsCount(): number {
-    return this.post.counts.comments;
-  }
-
-  public get score(): number {
-    return this.post.counts.score;
-  }
-
-  public get myVote(): number | undefined {
-    return this.post.my_vote;
-  }
-
-  public async onShare(): Promise<void> {
-    const shareData: ShareData = {
-      url: this.post.post.ap_id,
-      title: this.title,
-      text: this.body,
-    }
-    if (navigator.canShare && navigator.canShare(shareData)) {
-      await navigator.share(shareData);
-    }
-  }
-
-  public get didUpvote(): boolean {
-    return this.post.my_vote === 1;
-  }
-
-  public get didDownvote(): boolean {
-    return this.post.my_vote === -1;
-  }
-
-  public async onVote(type: 'up' | 'down'): Promise<void> {
-    let score = 0;
-    switch (type) {
-      case 'up':
-        score = (this.myVote === 1) ? 0 : (this.myVote ? 1 : 1);
-        break;
-      case 'down':
-        score = (this.myVote === -1) ? 0 : (this.myVote ? -1 : -1);
-        break;
-    }
-
-    this.onUpdatePostScore.next({
-      id: this.post.post.id,
-      score
-    });
-  }
-
-  public async onUpvote(): Promise<void> {
-    this.onUpdatePostScore.next({
-      id: this.post.post.id,
-      score: !this.myVote ? 1 : this.myVote * -1
-    });
-  }
-
-  public async onDownvote(): Promise<void> {
-    this.onUpdatePostScore.next({
-      id: this.post.post.id,
-      score: !this.myVote ? -1 : this.myVote * -1
-    });
   }
 
   public openPost(): void {

@@ -23,21 +23,18 @@
     </ng-container>
   </ion-toolbar>
 </ion-header>
-<ion-content class="ion-padding" [fullscreen]="true">
-  <ng-container *ngIf="!isLoading">
-    <h1 class="title">{{ post.post.name }}</h1>
-    <img
-      *ngIf="post.post.thumbnail_url"
-      [src]="post.post.thumbnail_url"
-      alt=""
-    />
-    <p>{{ post.post.body }}</p>
-    <ng-container *ngIf="link">
-      <a class="link" [href]="link" target="_blank">
-        <ion-icon name="link-outline"></ion-icon>
-        <span>{{ link }}</span>
-      </a>
-      <cite>{{ domain }}</cite>
-    </ng-container>
+<ion-content class="ion-padding" [fullscreen]="true" *ngIf="!isLoading">
+  <h3 class="title">{{ post.post.name }}</h3>
+  <img *ngIf="post.post.thumbnail_url" [src]="post.post.thumbnail_url" alt="" />
+  <p>{{ post.post.body }}</p>
+  <ng-container *ngIf="link">
+    <a class="link" [href]="link" target="_blank">
+      <ion-icon name="link-outline"></ion-icon>
+      <span>{{ link }}</span>
+    </a>
+    <cite>{{ domain }}</cite>
   </ng-container>
+</ion-content>
+<ion-content *ngIf="isLoading">
+  <ion-spinner name="bubbles"></ion-spinner>
 </ion-content>

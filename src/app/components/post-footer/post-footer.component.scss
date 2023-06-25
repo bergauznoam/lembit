@@ -1,0 +1,27 @@
+.ion-card-footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1em;
+    padding: 0 0.5em;
+    padding-top: 1em;
+
+    .score,
+    .comments {
+        display: flex;
+        align-items: center;
+        span {
+            margin: 1em 0;
+        }
+    }
+
+    .score ion-button {
+        scale: 1.5;
+    }
+
+    .share ion-button,
+    .comments ion-button {
+        scale: 1.4;
+    }
+}

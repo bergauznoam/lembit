@@ -58,3 +58,14 @@
 cite {
     font-size: 0.7em;
 }
+
+ion-spinner {
+    position: fixed;
+    width: 100px;
+    margin: 0 auto;
+    height: 100px;
+    top: calc(100vh / 2 - 100px);
+    bottom: 0;
+    left: 0;
+    right: 0;
+}

@@ -138,12 +138,6 @@ export class FeedPage implements OnInit {
     }, 2000);
   }
 
-  public async onUpdatePostScore({ id, score }: IUpdatePostScore): Promise<void> {
-    const updated_post = await this.apiService.likePost(id, score);
-    if (updated_post) {
-      this.store.dispatch(new UpdatePost(id, updated_post))
-    }
-  }
 
   public setListingType(listingType: ListingType): void {
     this.store.dispatch(new SetListingType(listingType));

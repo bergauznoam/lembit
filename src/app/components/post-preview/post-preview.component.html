@@ -30,32 +30,5 @@
       <cite>{{ domain }}</cite>
     </ng-container>
   </ion-card-content>
-  <div class="ion-card-footer">
-    <div class="score">
-      <ion-button fill="clear" (click)="onVote('up')">
-        <ion-icon
-          name="caret-up-circle-outline"
-          [color]="didUpvote ? 'primary' : 'medium'"
-        ></ion-icon>
-      </ion-button>
-      <span>{{ score }}</span>
-      <ion-button fill="clear" (click)="onVote('down')">
-        <ion-icon
-          name="caret-down-circle-outline"
-          [color]="didDownvote ? 'danger' : 'medium'"
-        ></ion-icon>
-      </ion-button>
-    </div>
-    <div class="comments">
-      <ion-button fill="clear" class="comments">
-        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
-      </ion-button>
-      <span style="margin-top: 1.3em">{{ commentsCount }}</span>
-    </div>
-    <div class="share">
-      <ion-button fill="clear" (click)="onShare()">
-        <ion-icon name="share-outline"></ion-icon>
-      </ion-button>
-    </div>
-  </div>
+  <app-post-footer [post]="post"></app-post-footer>
 </ion-card>
