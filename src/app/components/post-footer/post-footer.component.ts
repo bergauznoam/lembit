@@ -4,6 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { ApiService } from '@services/api.service';
 import { AppState } from '@state/types/appstate.type';
+import { getScore } from '@utils';
 import { PostView } from 'lemmy-js-client';
 
 @Component({
@@ -52,15 +53,7 @@ export class PostFooterComponent {
   }
 
   public async onVote(type: 'up' | 'down'): Promise<void> {
-    let score = 0;
-    switch (type) {
-      case 'up':
-        score = (this.myVote === 1) ? 0 : (this.myVote ? 1 : 1);
-        break;
-      case 'down':
-        score = (this.myVote === -1) ? 0 : (this.myVote ? -1 : -1);
-        break;
-    }
+    const score = getScore(type, this.myVote);
     const { id } = this.post.post;
     await this.apiService.likePost(id, score);
   }

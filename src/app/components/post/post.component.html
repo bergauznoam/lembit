@@ -1,6 +1,5 @@
 <ion-header>
   <ion-toolbar>
-    <!-- <ng-container *ngIf="!isLoading"> -->
     <div class="title">
       <img class="community-icon" [src]="post.community.icon || ''" alt="" />
       <div class="post-metadata">
@@ -20,7 +19,6 @@
     <ion-buttons slot="end">
       <ion-button (click)="closePost()">Close</ion-button>
     </ion-buttons>
-    <!-- </ng-container> -->
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding" [fullscreen]="true">
@@ -37,4 +35,12 @@
     <cite>{{ domain }}</cite>
   </ng-container>
   <app-post-footer [post]="post" [preview]="false"></app-post-footer>
+  <ng-container>
+    <app-comment
+      *ngFor="let comment of comments"
+      [comment]="comment"
+      [sort]="sort"
+      [limit]="limit"
+    ></app-comment>
+  </ng-container>
 </ion-content>

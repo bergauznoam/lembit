@@ -12,6 +12,9 @@ import {
     Login,
     SavePost,
     SortType,
+    GetComments,
+    CommentSortType,
+    CommentView
 } from "lemmy-js-client";
 
 import { environment } from "@environment";
@@ -128,5 +131,41 @@ export class ApiService {
         };
         const { post_view } = await this.lemmyClient.savePost(request);
         this.store.dispatch(new UpdatePost(id, post_view));
+    }
+
+    public async getComments(
+        post_id: number,
+        sort: CommentSortType,
+        limit: number,
+        max_depth: number
+    ): Promise<CommentView[]> {
+        const request: GetComments = {
+            auth: this.authToken,
+            post_id,
+            sort,
+            limit,
+            max_depth,
+            page: 1
+        }
+        const { comments } = await this.lemmyClient.getComments(request);
+        return comments;
+    }
+
+    public async getReplie(
+        comment_id: number,
+        sort: CommentSortType,
+        limit: number,
+        max_depth: number
+    ): Promise<CommentView[]> {
+        const request: GetComments = {
+            auth: this.authToken,
+            parent_id: comment_id,
+            sort,
+            limit,
+            max_depth,
+            page: 1
+        }
+        const { comments } = await this.lemmyClient.getComments(request);
+        return comments;
     }
 }

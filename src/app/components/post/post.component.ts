@@ -1,27 +1,30 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, EventEmitter, ViewChild, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { IonContent, IonicModule } from '@ionic/angular';
-import { CommunityModeratorView, CommunityView, GetPostResponse, PostView } from 'lemmy-js-client';
-import { register } from 'swiper/element/bundle';
+import {
+  CommentSortType,
+  CommentView,
+  CommunityModeratorView,
+  CommunityView,
+  GetPostResponse,
+  PostView
+} from 'lemmy-js-client';
 
-import { DatabaseService } from '@services/database.service';
-import { ApiService } from '@services/api.service';
 import { calculateTimePassed } from '@utils';
 import { Store } from '@ngrx/store';
 import { AppState } from '@state/types/appstate.type';
-import { Observable, takeUntil } from 'rxjs';
-import { selectActivePost } from '@state/selectors/feed.selectors';
 import { ClosePost } from '@state/actions/feed.actions';
 import { PostFooterComponent } from '@components/post-footer/post-footer.component';
+import { CommentComponent } from '@components/comment/comment.component';
+import { ApiService } from '@services/api.service';
 
-register();
 
 @Component({
   selector: 'app-post',
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, PostFooterComponent],
+  imports: [IonicModule, CommonModule, PostFooterComponent, CommentComponent],
 })
 export class PostComponent implements OnInit {
 
@@ -38,12 +41,21 @@ export class PostComponent implements OnInit {
   public moderators: CommunityModeratorView[] = [];
   public community!: CommunityView;
   public crossPosts: PostView[] = [];
+  public comments: CommentView[] = [];
+  public commentsSortTypes: CommentSortType[] = ["Hot", "Top", "New", "Old"];
+  public sort!: CommentSortType;
+  public limit: number = 50;
 
   constructor(
     private readonly store: Store<AppState>,
-  ) { }
+    private readonly apiService: ApiService
+  ) {
+    this.sort = this.commentsSortTypes[0];
+  }
 
   public async ngOnInit(): Promise<void> {
+    const { id } = this.post.post;
+    this.comments = await this.apiService.getComments(id, this.sort, this.limit, 5);
   }
 
   public closePost(): void {

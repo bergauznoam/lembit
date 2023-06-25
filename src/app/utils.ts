@@ -26,3 +26,16 @@ export const calculateTimePassed = (dateString: string): string => {
     return `${years}y ${remainingMonths}mo`;
   }
 }
+
+export const getScore = (type: 'up' | 'down', myVote?: number): number => {
+  let score = 0;
+  switch (type) {
+    case 'up':
+      score = (myVote === 1) ? 0 : (myVote ? 1 : 1);
+      break;
+    case 'down':
+      score = (myVote === -1) ? 0 : (myVote ? -1 : -1);
+      break;
+  }
+  return score;
+}
