@@ -19,7 +19,7 @@ export default {
     pathRewrite: {
       "^/api/lemmy.world": "",
     },
-    logLevel: "debug",
+    logLevel: "info",
     logProvider: logProvider,
   },
 };
