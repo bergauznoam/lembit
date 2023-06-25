@@ -85,13 +85,18 @@ export class ApiService {
         return posts;
     }
 
-    public async getPost(id: number): Promise<[PostView, CommunityModeratorView[]]> {
+    public async getPost(id: number): Promise<[PostView, CommunityModeratorView[], CommunityView, PostView[]]> {
         const request: GetPost = {
             auth: this.authToken,
             id
         }
-        const { post_view, moderators } = await this.lemmyClient.getPost(request);
-        return [post_view, moderators];
+        const {
+            post_view,
+            moderators,
+            community_view,
+            cross_posts
+        } = await this.lemmyClient.getPost(request);
+        return [post_view, moderators, community_view, cross_posts];
     }
 
     public async likePost(id: number, score: number): Promise<PostView | undefined> {

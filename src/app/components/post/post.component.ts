@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
 import { IonContent, IonicModule } from '@ionic/angular';
-import { CommunityModeratorView, PostView } from 'lemmy-js-client';
+import { CommunityModeratorView, CommunityView, PostView } from 'lemmy-js-client';
 import { register } from 'swiper/element/bundle';
 
 import { DatabaseService } from '@services/database.service';
@@ -32,6 +32,8 @@ export class PostComponent implements OnInit, OnDestroy {
   public isLoading: boolean = true;
   public post!: PostView;
   public moderators: CommunityModeratorView[] = [];
+  public community!: CommunityView;
+  public crossPosts: PostView[] = [];
 
   constructor(
     private readonly store: Store<AppState>,
@@ -67,9 +69,11 @@ export class PostComponent implements OnInit, OnDestroy {
 
   private async getPost(id: number): Promise<void> {
     this.isLoading = true;
-    const [post, moderators] = await this.apiService.getPost(id);
+    const [post, moderators, community_view, cross_posts] = await this.apiService.getPost(id);
     this.post = post;
     this.moderators = moderators;
+    this.community = community_view;
+    this.crossPosts = cross_posts;
     this.isLoading = false;
   }
 
