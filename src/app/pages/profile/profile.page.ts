@@ -6,15 +6,13 @@ import {
 } from "@angular/forms";
 import { IonicModule } from "@ionic/angular";
 import { Store } from '@ngrx/store';
-import { Observable, filter, map, tap } from "rxjs";
+import { Observable, filter, tap } from "rxjs";
 
 import { DatabaseService } from "@services/database.service";
 import { LoginComponent } from "@components/login/login.component";
-import { calculateTimePassed } from "@utils";
 import { ApiService } from "@services/api.service";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import { AppState } from "@state/appstate.type";
-import { LoadAccounts } from "@state/accounts.actions";
 import {
   selectAccounts,
   selectPrimaryAccount

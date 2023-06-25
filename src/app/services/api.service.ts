@@ -12,7 +12,6 @@ import {
     Login,
     SavePost,
     SortType,
-    PostResponse
 } from "lemmy-js-client";
 
 import { environment } from "@environment";

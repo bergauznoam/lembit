@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 
@@ -7,7 +7,6 @@ import { PostView } from 'lemmy-js-client';
 
 import { calculateTimePassed } from "@utils";
 import { AppState } from '@state/types/appstate.type';
-import { LoadPost } from '@state/actions/feed.actions';
 import { PostFooterComponent } from '@components/post-footer/post-footer.component';
 import { ApiService } from '@services/api.service';
 

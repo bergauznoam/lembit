@@ -2,7 +2,6 @@ import { Action } from "@ngrx/store";
 import { Feed } from "@models/feed.model";
 import {
     LoadPost,
-    ClosePost,
     LoadPosts,
     SetFeedPage,
     UpdatePost,

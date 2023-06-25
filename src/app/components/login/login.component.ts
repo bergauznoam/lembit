@@ -10,7 +10,6 @@ import {
 } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
-import { DatabaseService } from '@services/database.service';
 import { ApiService } from "@services/api.service";
 
 @Component({
@@ -27,7 +26,6 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private readonly databaseService: DatabaseService,
     private readonly apiService: ApiService
 
   ) { }
