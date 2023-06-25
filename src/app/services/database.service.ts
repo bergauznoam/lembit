@@ -30,12 +30,12 @@ export class DatabaseService extends Dexie {
     }
 
     public async loadAccounts(): Promise<void> {
-        const accounts = await this.accounts.toArray();
+        const accounts = await this.listAccounts();
         this.store.dispatch(new LoadAccounts(accounts));
     }
 
     public async loadStarredCommunities(user_id: number): Promise<void> {
-        const communities = await this.starred_community.filter(community => community.user_id === user_id).toArray();
+        const communities = await this.listCommunities(user_id);
         this.store.dispatch(new LoadCommunities(communities));
     }
 
@@ -79,8 +79,10 @@ export class DatabaseService extends Dexie {
         await this.loadStarredCommunities(user_id);
     }
 
-    public listCommunities(user_id: number): Promise<StarredCommunity[]> {
-        return this.starred_community.filter(community => community.user_id === user_id).toArray();
+    public async listCommunities(user_id: number): Promise<StarredCommunity[]> {
+        return await this.starred_community
+            .filter(community => community.user_id === user_id)
+            .sortBy("title");
     }
 
     public async deleteCommunity(user_id: number, id: number): Promise<void> {
