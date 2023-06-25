@@ -26,7 +26,7 @@
 <ion-content class="ion-padding" [fullscreen]="true" *ngIf="!isLoading">
   <h3 class="title">{{ post.post.name }}</h3>
   <img *ngIf="post.post.thumbnail_url" [src]="post.post.thumbnail_url" alt="" />
-  <p>{{ post.post.body }}</p>
+  <p *ngIf="post.post.body">{{ post.post.body }}</p>
   <ng-container *ngIf="link">
     <a class="link" [href]="link" target="_blank">
       <ion-icon name="link-outline"></ion-icon>
@@ -34,6 +34,7 @@
     </a>
     <cite>{{ domain }}</cite>
   </ng-container>
+  <app-post-footer [post]="post" [preview]="false"></app-post-footer>
 </ion-content>
 <ion-content *ngIf="isLoading">
   <ion-spinner name="bubbles"></ion-spinner>

@@ -12,6 +12,7 @@ import { AppState } from '@state/types/appstate.type';
 import { Observable, takeUntil } from 'rxjs';
 import { selectActivePost } from '@state/selectors/feed.selectors';
 import { ClosePost } from '@state/actions/feed.actions';
+import { PostFooterComponent } from '@components/post-footer/post-footer.component';
 
 register();
 
@@ -20,7 +21,7 @@ register();
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, PostFooterComponent],
 })
 export class PostComponent implements OnInit, OnDestroy {
 
