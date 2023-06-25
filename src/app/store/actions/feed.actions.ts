@@ -9,7 +9,7 @@ import {
     SET_SORTING_TYPE,
     UPDATE_POST,
 } from "@state/feed.actions.types";
-import { ListingType, PostView, SortType } from "lemmy-js-client";
+import { GetPostResponse, ListingType, PostView, SortType } from "lemmy-js-client";
 
 export class LoadPosts implements Action {
     readonly type = LOAD_POSTS;
@@ -22,7 +22,7 @@ export class ClosePost implements Action {
 
 export class LoadPost implements Action {
     readonly type = LOAD_POST;
-    constructor(public readonly id: number) { }
+    constructor(public readonly post: GetPostResponse) { }
 }
 
 export class SetFeedPage implements Action {

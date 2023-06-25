@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import {
-    CommunityModeratorView,
     CommunityView,
     CreatePostLike,
     GetPersonDetails,
@@ -11,13 +10,17 @@ import {
     ListCommunities,
     ListingType,
     Login,
-    PostView,
-    SortType
+    SavePost,
+    SortType,
+    PostResponse
 } from "lemmy-js-client";
 
 import { environment } from "@environment";
 import { DatabaseService } from '@services/database.service';
 import { Account } from "@models/account.model";
+import { Store } from "@ngrx/store";
+import { AppState } from "@state/types/appstate.type";
+import { LoadPost, LoadPosts, UpdatePost } from "@state/actions/feed.actions";
 
 
 @Injectable({
@@ -28,7 +31,8 @@ export class ApiService {
     private authToken!: string | undefined;
 
     constructor(
-        private readonly databaseService: DatabaseService
+        private readonly databaseService: DatabaseService,
+        private readonly store: Store<AppState>
     ) {
         this.lemmyClient = new LemmyHttp(`${location.origin}/api/${environment.defaultServer}`);
         this.databaseService.getPrimaryAccount()
@@ -72,7 +76,7 @@ export class ApiService {
         sort: SortType,
         limit: number,
         page: number
-    ): Promise<PostView[]> {
+    ): Promise<void> {
         const request: GetPosts = {
             auth: this.authToken,
             type_,
@@ -82,24 +86,19 @@ export class ApiService {
         };
 
         const { posts } = await this.lemmyClient.getPosts(request);
-        return posts;
+        this.store.dispatch(new LoadPosts(posts));
     }
 
-    public async getPost(id: number): Promise<[PostView, CommunityModeratorView[], CommunityView, PostView[]]> {
+    public async getPost(id: number): Promise<void> {
         const request: GetPost = {
             auth: this.authToken,
             id
         }
-        const {
-            post_view,
-            moderators,
-            community_view,
-            cross_posts
-        } = await this.lemmyClient.getPost(request);
-        return [post_view, moderators, community_view, cross_posts];
+        const post = await this.lemmyClient.getPost(request);
+        this.store.dispatch(new LoadPost(post));
     }
 
-    public async likePost(id: number, score: number): Promise<PostView | undefined> {
+    public async likePost(id: number, score: number): Promise<void> {
         if (!this.authToken) { return; }
         const request: CreatePostLike = {
             auth: this.authToken,
@@ -107,7 +106,7 @@ export class ApiService {
             score
         }
         const { post_view } = await this.lemmyClient.likePost(request);
-        return post_view;
+        this.store.dispatch(new UpdatePost(id, post_view));
     }
 
     public async getCommunities(type_: ListingType, limit: number, page: number): Promise<CommunityView[]> {
@@ -119,5 +118,16 @@ export class ApiService {
         }
         const { communities } = await this.lemmyClient.listCommunities(request);
         return communities;
+    }
+
+    public async savePost(id: number, save: boolean): Promise<void> {
+        if (!this.authToken) { return; }
+        const request: SavePost = {
+            auth: this.authToken,
+            post_id: id,
+            save
+        };
+        const { post_view } = await this.lemmyClient.savePost(request);
+        this.store.dispatch(new UpdatePost(id, post_view));
     }
 }

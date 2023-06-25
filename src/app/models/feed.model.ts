@@ -1,4 +1,4 @@
-import { ListingType, PostView, SortType } from "lemmy-js-client";
+import { GetPostResponse, ListingType, PostView, SortType } from "lemmy-js-client";
 
 export interface FeedSettings {
     page: number;
@@ -10,5 +10,5 @@ export interface FeedSettings {
 export interface Feed {
     posts: PostView[];
     settings: FeedSettings;
-    activePost: number | null;
+    activePost: GetPostResponse | null;
 }

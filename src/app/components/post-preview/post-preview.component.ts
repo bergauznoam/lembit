@@ -9,6 +9,7 @@ import { calculateTimePassed } from "@utils";
 import { AppState } from '@state/types/appstate.type';
 import { LoadPost } from '@state/actions/feed.actions';
 import { PostFooterComponent } from '@components/post-footer/post-footer.component';
+import { ApiService } from '@services/api.service';
 
 @Component({
   selector: 'app-post-preview',
@@ -21,7 +22,8 @@ export class PostPreviewComponent {
   @Input() public post!: PostView;
 
   constructor(
-    private readonly store: Store<AppState>
+    private readonly store: Store<AppState>,
+    private readonly apiService: ApiService,
   ) { }
 
   public get thumbnail(): string | undefined {
@@ -71,8 +73,8 @@ export class PostPreviewComponent {
     return body ? body.length > 150 ? `${body.slice(0, 147)}...` : body : "";
   }
 
-  public openPost(): void {
-    this.store.dispatch(new LoadPost(this.post.post.id));
+  public async openPost(): Promise<void> {
+    await this.apiService.getPost(this.post.post.id);
   }
 
   public openLink($event: MouseEvent, url: string): void {

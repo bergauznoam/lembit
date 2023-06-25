@@ -45,11 +45,21 @@ export const feedReducer = (state: Feed = initialState, action: Action): Feed =>
         }
         case UPDATE_POST: {
             const { id, post } = action as UpdatePost;
-            return { ...state, posts: state.posts.map(p => p.post.id == id ? post : p) };
+            const updated_state = { ...state, posts: state.posts.map(p => p.post.id == id ? post : p) };
+            if (state.activePost?.post_view.post.id === id) {
+                return {
+                    ...updated_state,
+                    activePost: {
+                        ...state.activePost,
+                        post_view: post
+                    }
+                }
+            }
+            return updated_state;
         }
         case LOAD_POST: {
-            const { id } = action as LoadPost;
-            return { ...state, activePost: id };
+            const { post } = action as LoadPost;
+            return { ...state, activePost: post };
         }
         case CLOSE_POST: {
             return { ...state, activePost: null };

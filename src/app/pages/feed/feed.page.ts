@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { InfiniteScrollCustomEvent, IonModal, IonicModule } from '@ionic/angular';
 
 import {
+  GetPostResponse,
   ListingType,
   PostView,
   SortType,
@@ -10,7 +11,6 @@ import {
 
 import { DatabaseService } from '@services/database.service';
 import { PostPreviewComponent } from "@components/post-preview/post-preview.component";
-import { IUpdatePostScore } from "@interfaces/update-post-score.interface";
 import { FormsModule } from '@angular/forms';
 import { PostComponent } from "@components/post/post.component";
 import { ApiService } from '@services/api.service';
@@ -21,7 +21,7 @@ import { Observable, tap } from 'rxjs';
 import { selectPrimaryAccount } from '@state/selectors/accounts.selectors';
 import { FeedSettings } from '@models/feed.model';
 import { selectPosts, selectFeedSettings, selectActivePost } from '@state/selectors/feed.selectors';
-import { LoadPosts, SetFeedPage, SetListingType, SetSortingType, UpdatePost } from '@state/actions/feed.actions';
+import { SetFeedPage, SetListingType, SetSortingType } from '@state/actions/feed.actions';
 import { ISort } from '@interfaces/sort.interface';
 
 
@@ -47,10 +47,11 @@ export class FeedPage implements OnInit {
   ];
   public selectedListingType: ListingType = "Local";
   public selectedSortingType: SortType = "Hot";
+  public activePost: GetPostResponse | null = null;
 
   private feedSettings!: FeedSettings;
 
-  private activePost$: Observable<number | null>;
+  private activePost$: Observable<GetPostResponse | null>;
   private posts$: Observable<PostView[]>;
   private feedSettings$: Observable<FeedSettings>;
   private primaryAccount$: Observable<Account | undefined>;
@@ -106,15 +107,16 @@ export class FeedPage implements OnInit {
 
   private subscribeToActivePost(): void {
     this.activePost$
-      .subscribe(id => {
-        this.isModalOpen = !!id;
+      .subscribe(post => {
+        this.activePost = post;
+        this.isModalOpen = !!post;
       });
   }
 
   private async getPosts(): Promise<void> {
     const { type_, sort, limit, page } = this.feedSettings;
-    const posts = await this.apiService.getPosts(type_, sort, limit, page);
-    this.store.dispatch(new LoadPosts(posts));
+    await this.apiService.getPosts(type_, sort, limit, page);
+
   }
 
   public get listingTypes(): ListingType[] {

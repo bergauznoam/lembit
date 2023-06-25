@@ -1,29 +1,29 @@
 <ion-header>
   <ion-toolbar>
-    <ng-container *ngIf="!isLoading">
-      <div class="title">
-        <img class="community-icon" [src]="post.community.icon || ''" alt="" />
-        <div class="post-metadata">
-          <span class="community-name">{{ post.community.name }}</span>
-          <div class="user">
-            <div class="username">
-              <span [ngClass]="{ mod: isModerator(post.creator.id) }">{{
-                post.creator.name
-              }}</span>
-              <span class="time">{{
-                calculateTimePassed(post.post.published)
-              }}</span>
-            </div>
+    <!-- <ng-container *ngIf="!isLoading"> -->
+    <div class="title">
+      <img class="community-icon" [src]="post.community.icon || ''" alt="" />
+      <div class="post-metadata">
+        <span class="community-name">{{ post.community.name }}</span>
+        <div class="user">
+          <div class="username">
+            <span [ngClass]="{ mod: isModerator(post.creator.id) }">{{
+              post.creator.name
+            }}</span>
+            <span class="time">{{
+              calculateTimePassed(post.post.published)
+            }}</span>
           </div>
         </div>
       </div>
-      <ion-buttons slot="end">
-        <ion-button (click)="closePost()">Close</ion-button>
-      </ion-buttons>
-    </ng-container>
+    </div>
+    <ion-buttons slot="end">
+      <ion-button (click)="closePost()">Close</ion-button>
+    </ion-buttons>
+    <!-- </ng-container> -->
   </ion-toolbar>
 </ion-header>
-<ion-content class="ion-padding" [fullscreen]="true" *ngIf="!isLoading">
+<ion-content class="ion-padding" [fullscreen]="true">
   <h3 class="title">{{ post.post.name }}</h3>
   <img *ngIf="post.post.thumbnail_url" [src]="post.post.thumbnail_url" alt="" />
   <p *ngIf="post.post.body">{{ post.post.body }}</p>
@@ -35,7 +35,4 @@
     <cite>{{ domain }}</cite>
   </ng-container>
   <app-post-footer [post]="post" [preview]="false"></app-post-footer>
-</ion-content>
-<ion-content *ngIf="isLoading">
-  <ion-spinner name="bubbles"></ion-spinner>
 </ion-content>

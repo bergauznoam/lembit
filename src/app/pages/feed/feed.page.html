@@ -42,7 +42,7 @@
   </ion-infinite-scroll>
   <ion-modal [isOpen]="isModalOpen">
     <ng-template>
-      <app-post></app-post>
+      <app-post *ngIf="activePost" [activePost]="activePost"></app-post>
     </ng-template>
   </ion-modal>
 </ion-content>

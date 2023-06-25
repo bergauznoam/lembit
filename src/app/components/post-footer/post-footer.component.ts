@@ -3,7 +3,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { ApiService } from '@services/api.service';
-import { UpdatePost } from '@state/actions/feed.actions';
 import { AppState } from '@state/types/appstate.type';
 import { PostView } from 'lemmy-js-client';
 
@@ -48,6 +47,10 @@ export class PostFooterComponent {
     return this.preview ? "small" : "large";
   }
 
+  public get isSaved(): boolean {
+    return this.post.saved;
+  }
+
   public async onVote(type: 'up' | 'down'): Promise<void> {
     let score = 0;
     switch (type) {
@@ -59,10 +62,7 @@ export class PostFooterComponent {
         break;
     }
     const { id } = this.post.post;
-    const updated_post = await this.apiService.likePost(id, score);
-    if (updated_post) {
-      this.store.dispatch(new UpdatePost(id, updated_post))
-    }
+    await this.apiService.likePost(id, score);
   }
 
   public async onShare(): Promise<void> {
@@ -74,6 +74,11 @@ export class PostFooterComponent {
     if (navigator.canShare && navigator.canShare(shareData)) {
       await navigator.share(shareData);
     }
+  }
+
+  public async onSave(): Promise<void> {
+    const { id } = this.post.post;
+    await this.apiService.savePost(id, !this.isSaved);
   }
 
 }
