@@ -8,9 +8,9 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
-
 import { accountsReducer } from '@state/accounts.reducer';
 import { communitiesReducer } from '@state/communities.reducer';
+import { feedReducer } from '@state/reducers/feed.reducer';
 
 
 if (environment.production) {
@@ -24,7 +24,8 @@ bootstrapApplication(AppComponent, {
       IonicModule.forRoot({}),
       StoreModule.forRoot({
         accounts: accountsReducer,
-        communities: communitiesReducer
+        communities: communitiesReducer,
+        feed: feedReducer
       })
     ),
     provideRouter(routes),

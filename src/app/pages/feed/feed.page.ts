@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { InfiniteScrollCustomEvent, IonModal, IonicModule } from '@ionic/angular';
 
 import {
-  SortType,
-  ListingType,
   PostView,
 } from "lemmy-js-client";
 
@@ -20,6 +18,9 @@ import { AppState } from '@state/types/appstate.type';
 import { Store } from '@ngrx/store';
 import { Observable, tap } from 'rxjs';
 import { selectPrimaryAccount } from '@state/selectors/accounts.selectors';
+import { FeedSettings } from '@models/feed.model';
+import { selectPosts, selectFeedSettings } from '@state/selectors/feed.selectors';
+import { LoadPosts, SetFeedPage, UpdatePost } from '@state/actions/feed.actions';
 
 
 @Component({
@@ -32,17 +33,16 @@ import { selectPrimaryAccount } from '@state/selectors/accounts.selectors';
 })
 export class FeedPage implements OnInit {
   @ViewChild(IonModal) modal!: IonModal;
-  private page: number = 1;
-  private limit: number = 20;
-  private type: ListingType = 'Local';
-  private sort: SortType = "Hot";
-
+  public primaryAccount!: Account | undefined;
+  public posts: PostView[] = [];
   public isModalOpen: boolean = false;
   public activePost!: PostView | null;
 
+  private feedSettings!: FeedSettings;
+
+  private posts$: Observable<PostView[]>;
+  private feedSettings$: Observable<FeedSettings>;
   private primaryAccount$: Observable<Account | undefined>;
-  public primaryAccount!: Account | undefined;
-  public posts: PostView[] = [];
 
 
   constructor(
@@ -51,10 +51,14 @@ export class FeedPage implements OnInit {
     private readonly apiService: ApiService
   ) {
     this.primaryAccount$ = this.store.select(selectPrimaryAccount);
+    this.posts$ = this.store.select(selectPosts);
+    this.feedSettings$ = this.store.select(selectFeedSettings);
   }
 
   public async ngOnInit(): Promise<void> {
     this.subscribeToPrimaryAccount();
+    this.subsribeToFeedSettings();
+    this.subscribeToPosts();
   }
 
   private subscribeToPrimaryAccount(): void {
@@ -64,24 +68,36 @@ export class FeedPage implements OnInit {
           if (account) {
             this.databaseService.loadStarredCommunities(account.id as number);
           }
-        })
+        }),
       )
       .subscribe(async (account) => {
         this.primaryAccount = account;
-        this.page = 0;
-        this.posts = [];
+      });
+  }
+
+  private subscribeToPosts(): void {
+    this.posts$
+      .subscribe(posts => {
+        this.posts = posts;
+      });
+  }
+
+  private subsribeToFeedSettings(): void {
+    this.feedSettings$
+      .subscribe(async (settings) => {
+        this.feedSettings = settings;
         await this.getPosts();
       });
   }
 
   private async getPosts(): Promise<void> {
-    const posts = await this.apiService.getPosts(this.type, this.sort, this.limit, this.page);
-    this.posts = [...this.posts, ...posts];
-    this.page += 1;
+    const { type_, sort, limit, page } = this.feedSettings;
+    const posts = await this.apiService.getPosts(type_, sort, limit, page);
+    this.store.dispatch(new LoadPosts(posts));
   }
 
   public async onIonInfinite(event: any): Promise<any> {
-    await this.getPosts();
+    this.store.dispatch(new SetFeedPage(this.feedSettings.page + 1));
     setTimeout(() => {
       (event as InfiniteScrollCustomEvent).target.complete();
     }, 500);
@@ -89,29 +105,15 @@ export class FeedPage implements OnInit {
 
   public handleRefresh(event: any): void {
     setTimeout(async () => {
-      this.page = 0;
-      await this.getPosts()
+      this.store.dispatch(new SetFeedPage(0));
       event.target.complete();
     }, 2000);
   }
 
   public async onUpdatePostScore({ id, score }: IUpdatePostScore): Promise<void> {
-    this.posts = this.posts
-      .map(post =>
-        post.post.id === id ?
-          {
-            ...post,
-            my_vote: score,
-            counts: {
-              ...post.counts,
-              score: post.counts.score + score
-            }
-          }
-          : post
-      );
     const updated_post = await this.apiService.likePost(id, score);
     if (updated_post) {
-      this.posts = this.posts.map(post => post.post.id === id ? updated_post : post);
+      this.store.dispatch(new UpdatePost(id, updated_post))
     }
   }
 
