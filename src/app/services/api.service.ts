@@ -1,9 +1,11 @@
 import { Injectable } from "@angular/core";
 import {
+    CommunityModeratorView,
     CommunityView,
     CreatePostLike,
     GetPersonDetails,
     GetPersonDetailsResponse,
+    GetPost,
     GetPosts,
     LemmyHttp,
     ListCommunities,
@@ -81,6 +83,15 @@ export class ApiService {
 
         const { posts } = await this.lemmyClient.getPosts(request);
         return posts;
+    }
+
+    public async getPost(id: number): Promise<[PostView, CommunityModeratorView[]]> {
+        const request: GetPost = {
+            auth: this.authToken,
+            id
+        }
+        const { post_view, moderators } = await this.lemmyClient.getPost(request);
+        return [post_view, moderators];
     }
 
     public async likePost(id: number, score: number): Promise<PostView | undefined> {

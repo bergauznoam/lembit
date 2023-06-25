@@ -119,5 +119,4 @@ export class FeedPage implements OnInit {
     this.activePost = post;
     this.isModalOpen = isOpen;
   }
-
 }

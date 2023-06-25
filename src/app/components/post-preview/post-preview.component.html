@@ -14,11 +14,21 @@
     </ion-card-subtitle>
   </ion-card-header>
 
-  <ion-card-content (click)="openPost()">
-    <ion-thumbnail slot="start" *ngIf="thumbnail">
-      <img [alt]="title" [src]="thumbnail" />
-    </ion-thumbnail>
-    <span *ngIf="body">{{ body }}</span>
+  <ion-card-content>
+    <ng-container (click)="openPost()">
+      <ion-thumbnail slot="start" *ngIf="thumbnail">
+        <img [alt]="title" [src]="thumbnail" />
+      </ion-thumbnail>
+      <span *ngIf="body" class="body">{{ body }}</span>
+    </ng-container>
+
+    <ng-container *ngIf="link">
+      <a class="link" [href]="link" target="_blank">
+        <ion-icon name="link-outline"></ion-icon>
+        <span>{{ link }}</span>
+      </a>
+      <cite>{{ domain }}</cite>
+    </ng-container>
   </ion-card-content>
   <div class="ion-card-footer">
     <div class="score">

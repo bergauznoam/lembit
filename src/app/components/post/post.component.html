@@ -1,14 +1,43 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-button (click)="closePost()">Close</ion-button>
-    </ion-buttons>
+    <ng-container *ngIf="!isLoading">
+      <div class="title">
+        <img class="community-icon" [src]="post.community.icon || ''" alt="" />
+        <div class="post-metadata">
+          <span class="community-name">{{ post.community.name }}</span>
+          <div class="user">
+            <div class="username">
+              <span [ngClass]="{ mod: isModerator(post.creator.id) }">{{
+                post.creator.name
+              }}</span>
+              <span class="time">{{
+                calculateTimePassed(post.post.published)
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ion-buttons slot="end">
+        <ion-button (click)="closePost()">Close</ion-button>
+      </ion-buttons>
+    </ng-container>
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding" [fullscreen]="true">
-  <p>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni illum quidem
-    recusandae ducimus quos reprehenderit. Veniam, molestias quos, dolorum
-    consequuntur nisi deserunt omnis id illo sit cum qui. Eaque, dicta.
-  </p>
+  <ng-container *ngIf="!isLoading">
+    <h1 class="title">{{ post.post.name }}</h1>
+    <img
+      *ngIf="post.post.thumbnail_url"
+      [src]="post.post.thumbnail_url"
+      alt=""
+    />
+    <p>{{ post.post.body }}</p>
+    <ng-container *ngIf="link">
+      <a class="link" [href]="link" target="_blank">
+        <ion-icon name="link-outline"></ion-icon>
+        <span>{{ link }}</span>
+      </a>
+      <cite>{{ domain }}</cite>
+    </ng-container>
+  </ng-container>
 </ion-content>

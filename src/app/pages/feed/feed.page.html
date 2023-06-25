@@ -6,7 +6,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list>
-    <ion-item *ngFor="let post of posts">
+    <ion-item lines="none" *ngFor="let post of posts">
       <app-post-preview
         (setOpen)="setOpen($event)"
         [post]="post"
@@ -21,7 +21,7 @@
     <ng-template>
       <app-post
         *ngIf="activePost"
-        [post]="activePost"
+        [post_id]="activePost.post.id"
         (setOpen)="setOpen($event)"
       ></app-post>
     </ng-template>

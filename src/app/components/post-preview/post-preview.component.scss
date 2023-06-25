@@ -4,6 +4,10 @@
 
 ion-card {
     margin: 0.5em 0.5em;
+
+    ion-card-content {
+        padding-bottom: unset;
+    }
 }
 
 ion-card-title {
@@ -41,6 +45,33 @@ ion-thumbnail {
     height: 100%;
 }
 
+.body {
+    font-size: 0.8em;
+}
+
+.link {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5em;
+    padding: 0.5em;
+    color: unset;
+    margin-top: 1em;
+
+    span {
+        width: -webkit-fill-available;
+        overflow: hidden;
+        white-space: nowrap;
+        margin-left: 0.5em;
+    }
+}
+
+cite {
+    font-size: 0.7em;
+}
+
 .ion-card-footer {
     display: flex;
     flex-direction: row;
@@ -48,6 +79,7 @@ ion-thumbnail {
     justify-content: space-between;
     margin-bottom: 1em;
     padding: 0 0.5em;
+    padding-top: 1em;
 
     .score,
     .comments {

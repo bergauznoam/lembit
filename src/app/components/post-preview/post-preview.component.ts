@@ -12,7 +12,7 @@ import { IOpenPost } from '@interfaces/open-post.interface';
   templateUrl: './post-preview.component.html',
   styleUrls: ['./post-preview.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule]
+  imports: [IonicModule, CommonModule],
 })
 export class PostPreviewComponent {
   @Input() public post!: PostView;
@@ -20,7 +20,28 @@ export class PostPreviewComponent {
   @Output() setOpen: EventEmitter<IOpenPost> = new EventEmitter();
 
   public get thumbnail(): string | undefined {
-    return this.post.post.thumbnail_url;
+    const image = this.post.post.thumbnail_url || this.post.post.url || "";
+    if ((/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(image)) {
+      return image;
+    }
+    return undefined;
+  }
+
+  public get link(): string | undefined {
+    const url = this.post.post.url || "";
+    if (!(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(url)) {
+      return url;
+    }
+    return undefined;
+  }
+
+  public get domain(): string {
+    const { url } = this.post.post;
+    if (url) {
+      const { hostname } = new URL(url);
+      return hostname.replace("wwww\.", "");
+    }
+    return "";
   }
 
   public get communityIcon(): string {
@@ -42,7 +63,7 @@ export class PostPreviewComponent {
 
   public get body(): string {
     const { body } = this.post.post;
-    return body ? body.length > 100 ? `${body.slice(0, 97)}...` : body : "";
+    return body ? body.length > 150 ? `${body.slice(0, 147)}...` : body : "";
   }
 
   public get commentsCount(): number {
@@ -109,5 +130,10 @@ export class PostPreviewComponent {
 
   public openPost(): void {
     this.setOpen.next({ isOpen: true, post: this.post });
+  }
+
+  public openLink($event: MouseEvent, url: string): void {
+    $event.stopPropagation();
+    document.open(url, "_blank");
   }
 }

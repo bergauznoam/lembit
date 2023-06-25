@@ -1,0 +1,60 @@
+.title {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+
+    .community-icon {
+        width: 2em;
+        margin-right: 1em;
+    }
+
+    .post-metadata {
+        display: flex;
+        font-size: 0.8em;
+        flex-direction: column;
+        justify-content: space-around;
+
+        .user {
+            display: flex;
+            flex-direction: row;
+
+            .username span:first-child {
+                color: var(--ion-color-primary);
+
+                &.mod {
+                    color: var(--ion-color-success);
+                }
+            }
+
+            .time {
+                margin-left: 1em;
+            }
+        }
+    }
+}
+
+.join-community {
+    padding: 0 1.5em;
+}
+
+.link {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5em;
+    padding: 0.5em;
+    margin-top: 1em;
+
+    span {
+        width: -webkit-fill-available;
+        overflow: hidden;
+        white-space: nowrap;
+        margin-left: 0.5em;
+    }
+}
+
+cite {
+    font-size: 0.7em;
+}
