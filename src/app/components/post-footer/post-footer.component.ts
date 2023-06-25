@@ -17,6 +17,7 @@ import { PostView } from 'lemmy-js-client';
 export class PostFooterComponent {
 
   @Input() public post!: PostView;
+  @Input() public preview: boolean = true;
 
   constructor(
     private readonly store: Store<AppState>,
@@ -41,6 +42,10 @@ export class PostFooterComponent {
 
   public get score(): number {
     return this.post.counts.score;
+  }
+
+  public get buttonSize(): string {
+    return this.preview ? "small" : "large";
   }
 
   public async onVote(type: 'up' | 'down'): Promise<void> {

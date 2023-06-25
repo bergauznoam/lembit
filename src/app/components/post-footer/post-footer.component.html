@@ -1,28 +1,52 @@
-<div class="ion-card-footer">
-  <div class="score">
-    <ion-button fill="clear" (click)="onVote('up')">
-      <ion-icon
-        name="caret-up-circle-outline"
-        [color]="didUpvote ? 'primary' : 'medium'"
-      ></ion-icon>
-    </ion-button>
-    <span>{{ score }}</span>
-    <ion-button fill="clear" (click)="onVote('down')">
-      <ion-icon
-        name="caret-down-circle-outline"
-        [color]="didDownvote ? 'danger' : 'medium'"
-      ></ion-icon>
-    </ion-button>
-  </div>
-  <div class="comments">
-    <ion-button fill="clear" class="comments">
+<ion-toolbar [ngClass]="{ fullview: !preview }">
+  <ion-button
+    fill="clear"
+    slot="start"
+    (click)="onVote('up')"
+    [size]="buttonSize"
+  >
+    <ion-icon
+      name="caret-up-circle-outline"
+      [color]="didUpvote ? 'success' : 'medium'"
+    ></ion-icon>
+  </ion-button>
+  <ion-label slot="start">{{ score }}</ion-label>
+  <ion-button
+    fill="clear"
+    slot="start"
+    (click)="onVote('down')"
+    [size]="buttonSize"
+  >
+    <ion-icon
+      name="caret-down-circle-outline"
+      [color]="didDownvote ? 'danger' : 'medium'"
+    ></ion-icon>
+  </ion-button>
+  <ng-container *ngIf="preview">
+    <ion-button
+      class="comments-icon"
+      slot="start"
+      fill="clear"
+      size="small"
+      color="medium"
+    >
       <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
     </ion-button>
-    <span style="margin-top: 1.3em">{{ commentsCount }}</span>
-  </div>
-  <div class="share">
-    <ion-button fill="clear" (click)="onShare()">
-      <ion-icon name="share-outline"></ion-icon>
+    <ion-label slot="start" class="comments-label"
+      >{{ commentsCount }}
+      {{ commentsCount === 1 ? "Comment" : "Comments" }}</ion-label
+    >
+  </ng-container>
+  <ng-container *ngIf="!preview">
+    <ion-button slot="start" fill="clear" [size]="buttonSize" color="medium">
+      <ion-icon name="arrow-undo-outline"></ion-icon>
     </ion-button>
-  </div>
-</div>
+    <ion-button slot="start" fill="clear" [size]="buttonSize" color="medium">
+      <ion-icon name="bookmark-outline"></ion-icon>
+    </ion-button>
+  </ng-container>
+
+  <ion-button slot="end" fill="clear" (click)="onShare()" [size]="buttonSize">
+    <ion-icon name="share-outline"></ion-icon>
+  </ion-button>
+</ion-toolbar>

@@ -1,27 +1,19 @@
-.ion-card-footer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1em;
-    padding: 0 0.5em;
-    padding-top: 1em;
+ion-toolbar.fullview {
+    height: auto;
+    padding-left: unset;
+    padding-right: unset;
 
-    .score,
-    .comments {
-        display: flex;
-        align-items: center;
-        span {
-            margin: 1em 0;
-        }
+    ion-button.button-large {
+        height: 2em;
+        width: 4em;
+        font-size: 1em;
     }
+}
 
-    .score ion-button {
-        scale: 1.5;
-    }
+.comments-icon {
+    margin-left: 1em;
+}
 
-    .share ion-button,
-    .comments ion-button {
-        scale: 1.4;
-    }
+.comments-label {
+    font-size: 0.8em;
 }
