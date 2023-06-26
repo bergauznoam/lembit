@@ -14,7 +14,8 @@ import {
     SortType,
     GetComments,
     CommentSortType,
-    CommentView
+    CommentView,
+    CreateCommentLike
 } from "lemmy-js-client";
 
 import { environment } from "@environment";
@@ -111,6 +112,16 @@ export class ApiService {
         this.store.dispatch(new UpdatePost(id, post_view));
     }
 
+    public async likeComment(id: number, score: number): Promise<void> {
+        if (!this.authToken) { return; }
+        const request: CreateCommentLike = {
+            auth: this.authToken,
+            comment_id: id,
+            score
+        }
+        await this.lemmyClient.likeComment(request);
+    }
+
     public async getCommunities(type_: ListingType, limit: number, page: number): Promise<CommunityView[]> {
         const request: ListCommunities = {
             auth: this.authToken,
@@ -160,10 +171,10 @@ export class ApiService {
         const request: GetComments = {
             auth: this.authToken,
             parent_id: comment_id,
-            sort,
-            limit,
-            max_depth,
-            page: 1
+            // sort,
+            // limit,
+            // max_depth,
+            // page: 1
         }
         const { comments } = await this.lemmyClient.getComments(request);
         return comments;

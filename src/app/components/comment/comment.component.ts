@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { IonItemSliding, IonicModule } from '@ionic/angular';
 import { ApiService } from '@services/api.service';
 import { getScore, calculateTimePassed } from '@utils';
 import { CommentSortType, CommentView } from 'lemmy-js-client';
@@ -13,6 +13,7 @@ import { CommentSortType, CommentView } from 'lemmy-js-client';
   imports: [IonicModule, CommonModule]
 })
 export class CommentComponent implements OnInit {
+  @ViewChild("slideItem") private readonly voteOptions!: IonItemSliding;
   @Input() public comment!: CommentView;
   @Input() public sort!: CommentSortType;
   @Input() public limit!: number;
@@ -25,7 +26,7 @@ export class CommentComponent implements OnInit {
   public async ngOnInit() {
     const { id } = this.comment.comment;
     setTimeout(async () => {
-      this.replies = await this.apiService.getComments(id, this.sort, this.limit, 5);
+      // this.replies = await this.apiService.getComments(id, this.sort, this.limit, 5);
     }, 1000);
   }
 
@@ -50,13 +51,39 @@ export class CommentComponent implements OnInit {
   }
 
   public get score(): number {
-    return this.comment.counts.score;
+    const { score } = this.comment.counts;
+    const { my_vote } = this.comment;
+    if (my_vote) {
+      return score + my_vote;
+    }
+    return score;
+  }
+
+  public get scoreIcon(): string {
+    const { my_vote } = this.comment;
+    if (!my_vote || my_vote > 0) {
+      return "arrow-up"
+    }
+    return "arrow-down"
+  }
+
+  public get scoreColor(): string {
+    const { my_vote } = this.comment;
+    if (!my_vote) {
+      return "medium"
+    }
+    if (my_vote > 0) {
+      return "success"
+    }
+    return "danger"
   }
 
   public async onVote(type: 'up' | 'down'): Promise<void> {
     const score = getScore(type, this.comment.my_vote);
     const { id } = this.comment.comment;
-    // await this.apiService.likePost(id, score);
+    await this.apiService.likeComment(id, score);
+    await this.voteOptions.close();
+    this.comment.my_vote = score;
   }
 
   public get time(): string {

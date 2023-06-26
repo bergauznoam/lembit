@@ -35,7 +35,7 @@
     <cite>{{ domain }}</cite>
   </ng-container>
   <app-post-footer [post]="post" [preview]="false"></app-post-footer>
-  <ng-container>
+  <ng-container *ngIf="!isLoadingComments">
     <app-comment
       *ngFor="let comment of comments"
       [comment]="comment"
@@ -43,4 +43,9 @@
       [limit]="limit"
     ></app-comment>
   </ng-container>
+  <ion-spinner
+    class="comments-spinner"
+    *ngIf="isLoadingComments"
+    name="dots"
+  ></ion-spinner>
 </ion-content>

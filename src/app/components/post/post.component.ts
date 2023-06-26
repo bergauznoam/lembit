@@ -45,6 +45,7 @@ export class PostComponent implements OnInit {
   public commentsSortTypes: CommentSortType[] = ["Hot", "Top", "New", "Old"];
   public sort!: CommentSortType;
   public limit: number = 50;
+  public isLoadingComments: boolean = false;
 
   constructor(
     private readonly store: Store<AppState>,
@@ -55,7 +56,9 @@ export class PostComponent implements OnInit {
 
   public async ngOnInit(): Promise<void> {
     const { id } = this.post.post;
+    this.isLoadingComments = true;
     this.comments = await this.apiService.getComments(id, this.sort, this.limit, 5);
+    this.isLoadingComments = false;
   }
 
   public closePost(): void {

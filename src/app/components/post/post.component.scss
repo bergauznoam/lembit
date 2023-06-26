@@ -71,7 +71,9 @@
 }
 
 cite {
+    display: block;
     font-size: 0.7em;
+    margin-bottom: 1em;
 }
 
 ion-spinner {
@@ -83,9 +85,8 @@ ion-spinner {
     bottom: 0;
     left: 0;
     right: 0;
-}
 
-app-comment {
-    margin-bottom: 0.2em;
-    display: block;
+    &.comments-spinner {
+        top: 33em;
+    }
 }
